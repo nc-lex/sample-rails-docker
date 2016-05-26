@@ -29,6 +29,6 @@ db:
   # see https://hub.docker.com/_/postgres/
   image: postgres:9.4.5
 
-  # persist the database between containers by storing it in a volume
-  volumes:
-    - .docker/db:/var/lib/postgresql/data
+  # # persist the database between containers by storing it in a volume
+  # volumes:
+  #   - .docker/db:/var/lib/postgresql/data

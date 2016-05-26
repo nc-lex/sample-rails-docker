@@ -17,3 +17,4 @@
 /tmp
 
 /.docker/.env
+/.docker/db
