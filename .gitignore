@@ -21,3 +21,6 @@
 
 # Ignore Docker database
 /.docker/db
+
+# Ignore history files
+/.byebug_history
