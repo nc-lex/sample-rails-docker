@@ -1,3 +1,4 @@
+# TODO #1
 # Base our image on an official, minimal image of our preferred Ruby
 FROM ruby:2.2-slim
 
@@ -17,15 +18,22 @@ COPY .docker/Gemfile.lock Gemfile.lock
 # Install essential Rails gems
 RUN bundle install
 
+# TODO #2
 # Install additional Linux packages that will be used in the actual Gemfile
-RUN apt-get install -y mysql-client libmysqlclient-dev
-# RUN apt-get install -y libpq-dev
+RUN apt-get install -y mysql-client libmysqlclient-dev    # mysql2
+# RUN apt-get install -y git                              # git
+# RUN apt-get install -y libxslt-dev libxml2-dev          # nokogiri, < 1.6.4
+# RUN apt-get install -y libpq-dev                        # pg
 
 # Use the actual Gemfiles as Docker cache markers. Always bundle before copying app src
 # (the src likely changed and we don't want to invalidate Docker's cache too early)
 # http://ilikestuffblog.com/2014/01/06/how-to-skip-bundle-install-when-deploying-a-rails-app-to-docker/
 COPY Gemfile Gemfile
 COPY Gemfile.lock Gemfile.lock
+
+# TODO #3
+# Tweak the system for some particular gem install errors
+# RUN gem update debugger-ruby_core_source
 
 # Install additional Ruby gems
 RUN bundle install
