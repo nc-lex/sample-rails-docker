@@ -1,11 +1,3 @@
-mysql: &mysql
-  adapter: mysql2
-  encoding: utf8
-  pool: 5
-  username: root
-  password: <%= ENV['MYSQL_ROOT_PASSWORD'] %>
-  host: db
-
 sqlite: &sqlite
   adapter: sqlite3
   pool: 5
@@ -18,6 +10,14 @@ postgres: &postgres
   pool: 5
   username: postgres
   password: <%= ENV['POSTGRES_PASSWORD'] %>
+  host: db
+
+mysql: &mysql
+  adapter: mysql2
+  encoding: utf8
+  pool: 5
+  username: root
+  password: <%= ENV['MYSQL_ROOT_PASSWORD'] %>
   host: db
 
 development:

@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+while [[ $# > 1 ]]
+do
+  	key="$1"
+    case $key in
+        -s|--service)
+        SERVICE="$2"
+        shift
+        ;;
+    esac
+    shift
+done
+
+docker-compose exec ${SERVICE:-app} /bin/bash

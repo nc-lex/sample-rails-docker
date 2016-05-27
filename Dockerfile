@@ -19,6 +19,7 @@ RUN bundle install
 
 # Install additional Linux packages that will be used in the actual Gemfile
 RUN apt-get install -y mysql-client libmysqlclient-dev
+# RUN apt-get install -y libpq-dev
 
 # Define where our application will live inside the image
 ENV RAILS_ROOT /var/www/sample_app

@@ -12,6 +12,7 @@ gem 'turbolinks'
 gem 'jbuilder',             '~> 2.0'
 gem 'sdoc',                 '~> 0.4.0', group: :doc
 gem 'mysql2',								'0.4.4'
+# gem 'pg',                   '0.18.4'
 
 group :development do
   gem 'web-console',		'~> 2.0'
