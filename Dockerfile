@@ -21,15 +21,6 @@ RUN bundle install
 RUN apt-get install -y mysql-client libmysqlclient-dev
 # RUN apt-get install -y libpq-dev
 
-# Define where our application will live inside the image
-ENV RAILS_ROOT /var/www/sample_app
-
-# Create application home. App server will need the pids dir so just create everything in one shot
-RUN mkdir -p $RAILS_ROOT/tmp/pids
-
-# Set our working directory to application home
-WORKDIR $RAILS_ROOT
-
 # Use the actual Gemfiles as Docker cache markers. Always bundle before copying app src
 # (the src likely changed and we don't want to invalidate Docker's cache too early)
 # http://ilikestuffblog.com/2014/01/06/how-to-skip-bundle-install-when-deploying-a-rails-app-to-docker/
@@ -38,6 +29,15 @@ COPY Gemfile.lock Gemfile.lock
 
 # Install additional Ruby gems
 RUN bundle install
+
+# Define where our application will live inside the image
+ENV RAILS_ROOT /var/www/sample_app
+
+# Create application home. App server will need the pids dir so just create everything in one shot
+RUN mkdir -p $RAILS_ROOT/tmp/pids
+
+# Set our working directory to application home
+WORKDIR $RAILS_ROOT
 
 # Copy the Rails application into place
 COPY . .
