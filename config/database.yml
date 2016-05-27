@@ -1,29 +1,36 @@
+mysql: &mysql
+  adapter: mysql2
+  encoding: utf8
+  pool: 5
+  username: root
+  password: <%= ENV['MYSQL_ROOT_PASSWORD'] %>
+  host: db
+
 sqlite: &sqlite
   adapter: sqlite3
   pool: 5
   timeout: 5000
+  host: db
 
 postgres: &postgres
   adapter: postgresql
   encoding: unicode
   pool: 5
   username: postgres
-  password:
+  password: <%= ENV['POSTGRES_PASSWORD'] %>
   host: db
 
 development:
-  <<: *postgres
+  <<: *mysql
   database: sample_app_development
 
 test:
-  <<: *postgres
+  <<: *mysql
   database: sample_app_test
 
 production:
-  <<: *postgres
+  <<: *mysql
   database: sample_app_production
-  username: sample_app
-  password: <%= ENV['SAMPLE_APP_PRODUCTION_PASSWORD'] %>
 
 # # SQLite version 3.x
 # #   gem install sqlite3

@@ -27,8 +27,11 @@ app:
 db:
   # use the preferred version of the official Postgres image
   # see https://hub.docker.com/_/postgres/
-  image: postgres:9.4.5
+  image: mysql:5.7.12
 
-  # # persist the database between containers by storing it in a volume
+  # sources environment variable configuration for our app
+  env_file: .docker/.env
+
+  # persist the database between containers by storing it in a volume
   # volumes:
-  #   - .docker/db:/var/lib/postgresql/data
+  #   - .docker/db:/var/lib/mysql

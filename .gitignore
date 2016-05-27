@@ -16,5 +16,8 @@
 !/log/.keep
 /tmp
 
+# Ignore Docker environment variables config.
 /.docker/.env
+
+# Ignore Docker database
 /.docker/db

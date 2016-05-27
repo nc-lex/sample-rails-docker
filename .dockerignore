@@ -1,5 +1,12 @@
+# Ignore bundler config.
 .bundle
+
+# Ignore the default SQLite database.
+db/*.sqlite3
+db/*.sqlite3-journal
+
+# Ignore Git and Docker config.
 .git
 .dockerignore
-.docker/.env
-.docker/db
+.docker
+!.docker/Gemfile*
