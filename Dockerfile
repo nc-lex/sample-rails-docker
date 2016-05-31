@@ -34,6 +34,7 @@ COPY Gemfile.lock Gemfile.lock
 # TODO #3
 # Tweak the system for some particular gem install errors
 # RUN gem update debugger-ruby_core_source
+# RUN gem install debugger -v '1.6.5'
 
 # Install additional Ruby gems
 RUN bundle install
