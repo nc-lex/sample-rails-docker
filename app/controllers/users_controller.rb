@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
   def show
-    raise StandardError
+    # raise StandardError
   	@user = User.find(params[:id])
   end
 
