@@ -34,7 +34,7 @@ env_file::
   The list of environment variables to be set. Sensitive strings such as database password can be place here.
   
 ports::
-  Expose ports of the container and provide mapping between ports of the Docker Engine (as in <code>192.168.99.100:*3000*</code>) and ports of the container (as in <code>rails s -p *3000*</code>)
+  Expose ports of the container and provide mapping between ports of the Docker Engine (as in <code>dockerhost:*3000*</code>) and ports of the container (as in <code>rails s -p *3000*</code>)
   
 volumes::
   Mounts directories of the host system to the container.
@@ -42,10 +42,30 @@ volumes::
 
 image::
   Directly use a Docker base image without a <code>Dockerfile</code> build
+  
+=== Database
+
+In <code>config/database.yml</code>, <code>host</code> should be set to <code>db</code> to connect to the database service defined in <code>docker-compose.yml</code>
 
 === Ignore
 
-<code>.dockerignore</code> defines files to be excluded when copied, etc in <code>Dockerfile</code>
+<code>.dockerignore</code> defines files to be excluded when copied, etc in <code>Dockerfile</code>.
 
-<code>.gitignore</code> should include <code>.docker/.env</code>
+<code>.gitignore</code> should include <code>.docker/.env</code>.
 
+== Usage
+
+* Starts "Docker Quickstart Terminal" from Launchpad.
+
+Alternatively, after the "Docker Quickstart Terminal" completes startup, an independent terminal with the following environment variables set (in <code>~/.bash_profile</code>, etc) will also work.
+
+  export DOCKER_HOST=tcp://<IP address in Docker Quickstart Terminal>:2376
+  export DOCKER_CERT_PATH=/Users/<username>/.docker/machine/machines/default
+  export DOCKER_TLS_VERIFY=1
+  export DOCKER_MACHINE_NAME=default
+
+* Go to the app root directory, and run <code>docker-compose up</code>.
+
+* Run <code>.docker/bash</code> to start a console in the app container for debugging, etc.
+
+  Note that <code>.docker/bash -s db</code> connects to the database container.
