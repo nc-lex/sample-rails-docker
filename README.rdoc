@@ -74,6 +74,11 @@ In <code>config/database.yml</code>, <code>host</code> should be set to <code>db
 * Run <code>.docker/bash</code> to start a console in the app container for debugging, etc.
 
   Note that <code>.docker/bash -s db</code> connects to the database container.
+  
+* Initialize the database, by issuing the following command in the app container console.
+
+    rake db:create
+    rake db:schema:load
 
 * It might help to put <code>[DockerHost] dockerhost</code> in the <code>hosts</code> file.
 
@@ -89,7 +94,7 @@ As shown in the graph above, Docker can mount host directories directly as conta
 
   MySQL and PostgreSQL will attempt to take ownership of its data directory. Mounting the data directory to the host (for backing up, etc) will prevent them from doing so and successfully starting up.
   
-  However, their corresponding Docker images define their data directories as volumes, so its content will preserve and it's easy to access it from another container.
+  However, their corresponding Docker images define their data directories as volumes, so it's easy to access it from another container.
   
     app:
       volumes_from:
