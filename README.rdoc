@@ -57,7 +57,7 @@ In <code>config/database.yml</code>, <code>host</code> should be set to <code>db
 
 == Usage
 
-* Starts "Docker Quickstart Terminal" from Launchpad. After it completes startup it will display the current Docker IP address. It will be referred to as <code>[DockerHost]</code> laster.
+* Starts "Docker Quickstart Terminal" from Launchpad. After it completes startup it will display the current Docker IP address. It will be referred to as <code>[DockerHost]</code> later.
 
 Alternatively, after the "Docker Quickstart Terminal" completes startup, an independent terminal with the following environment variables set (in <code>~/.bash_profile</code>, etc) will also work.
 
