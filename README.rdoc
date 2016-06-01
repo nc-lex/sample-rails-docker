@@ -36,6 +36,8 @@ env_file::
 ports::
   Expose ports of the container and provide mapping between ports of the Docker Engine (as in <code>dockerhost:*3000*</code>) and ports of the container (as in <code>rails s -p *3000*</code>)
   
+  See "Usage" section for more about <code>dockerhost</code>
+  
 volumes::
   Mounts directories of the host system to the container.
   See "Volume Mounting" section for problems caused by this feature.
@@ -55,11 +57,11 @@ In <code>config/database.yml</code>, <code>host</code> should be set to <code>db
 
 == Usage
 
-* Starts "Docker Quickstart Terminal" from Launchpad. After it completes startup it will display the current Docker IP address. It will be referred to as <DockerHost> laster.
+* Starts "Docker Quickstart Terminal" from Launchpad. After it completes startup it will display the current Docker IP address. It will be referred to as <code>[DockerHost]</code> laster.
 
 Alternatively, after the "Docker Quickstart Terminal" completes startup, an independent terminal with the following environment variables set (in <code>~/.bash_profile</code>, etc) will also work.
 
-  export DOCKER_HOST=tcp://<DockerHost>:2376
+  export DOCKER_HOST=tcp://[DockerHost]:2376
   export DOCKER_CERT_PATH=/Users/<Username>/.docker/machine/machines/default
   export DOCKER_TLS_VERIFY=1
   export DOCKER_MACHINE_NAME=default
@@ -70,4 +72,4 @@ Alternatively, after the "Docker Quickstart Terminal" completes startup, an inde
 
   Note that <code>.docker/bash -s db</code> connects to the database container.
 
-* It might help to put <code><DockerHost> dockerhost</code> in the <code>hosts</code> file.
+* It might help to put <code>[DockerHost] dockerhost</code> in the <code>hosts</code> file.
