@@ -26,6 +26,9 @@ The following are parts of <code>Dockerfile</code> that should be configured, ma
 
 The following are the important labels in the file.
 
+build::
+  Call <code>docker build</code> with the <code>Dockerfile</code> specified to build the image for the service container.
+
 command::
   The command that will be run when the container starts. Overrides <code>COMMAND</code> in <code>Dockerfile</code>.
   Should be placed in brackets to be <code>exec</code>ed and keeps PID = 1.
@@ -40,7 +43,7 @@ ports::
   
 volumes::
   Mounts directories of the host system to the container.
-  See "Volume Mounting" section for problems caused by this feature.
+  See "Volume Mounting" section for issues caused by this feature.
 
 image::
   Directly use a Docker base image without a <code>Dockerfile</code> build
@@ -59,12 +62,12 @@ In <code>config/database.yml</code>, <code>host</code> should be set to <code>db
 
 * Starts "Docker Quickstart Terminal" from Launchpad. After it completes startup it will display the current Docker IP address. It will be referred to as <code>[DockerHost]</code> later.
 
-Alternatively, after the "Docker Quickstart Terminal" completes startup, an independent terminal with the following environment variables set (in <code>~/.bash_profile</code>, etc) will also work.
+  Alternatively, after the "Docker Quickstart Terminal" completes startup, an independent terminal with the following environment variables set (in <code>~/.bash_profile</code>, etc) will also work.
 
-  export DOCKER_HOST=tcp://[DockerHost]:2376
-  export DOCKER_CERT_PATH=/Users/<Username>/.docker/machine/machines/default
-  export DOCKER_TLS_VERIFY=1
-  export DOCKER_MACHINE_NAME=default
+    export DOCKER_HOST=tcp://[DockerHost]:2376
+    export DOCKER_CERT_PATH=/Users/<Username>/.docker/machine/machines/default
+    export DOCKER_TLS_VERIFY=1
+    export DOCKER_MACHINE_NAME=default
 
 * Go to the app root directory, and run <code>docker-compose up</code>.
 
@@ -73,3 +76,23 @@ Alternatively, after the "Docker Quickstart Terminal" completes startup, an inde
   Note that <code>.docker/bash -s db</code> connects to the database container.
 
 * It might help to put <code>[DockerHost] dockerhost</code> in the <code>hosts</code> file.
+
+== Issues
+
+=== Volume Mounting
+
+http://i.imgur.com/oUTQQh7.png
+
+As shown in the graph above, Docker can mount host directories directly as container volumes. Normally it's used to mount the source folder to avoid <code>docker-compose build</code> after every code update. However, this creates some issues.
+
+* Permissions on the mounted file system originates from the host file system, and cannot be altered by the container.
+
+  MySQL and PostgreSQL will attempt to take ownership of its data directory. Mounting the data directory to the host (for backing up, etc) will prevent them from doing so and successfully starting up.
+  
+  However, their corresponding Docker images define their data directories as volumes, so its content will preserve and it's easy to access it from another container.
+  
+    app:
+      volumes_from:
+        - db
+      
+  For example, declaring the above in <code>docker-compose.yml</code> allows the app container to access the data directory of the database container by the same path (e.g. <code>/var/lib/mysql</code>).
