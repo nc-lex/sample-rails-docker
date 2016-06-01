@@ -1,28 +1,47 @@
-== README
+= Sample Rails app on Docker
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+== Configuration
 
-Things you may want to cover:
+=== Docker Engine
 
-* Ruby version
+<code>Dockerfile</code> defines how a single Docker image is built.
 
-* System dependencies
+Docker caches for each line in <code>Dockerfile</code>, and will check modifications of files and use the corresponding cache to skip steps and speed up rebuilding. Therefore, lines that changes more often (such as <code>Gemfile</code>) should be put after lines that changes less often (such as <code>apt-get install build-essential</code>)
 
-* Configuration
+In order to prevent the entire <code>Gemfile</code> to be <code>bundle install</code>ed when the Docker image is rebuilt, a seperate <code>Gemfile</code> is placed under <code>.docker</code> folder. This <code>Gemfile</code> should include essential gems and be relatively stable. In <code>Dockerfile</code>, it will be <code>bundle install</code>ed before the actual <code>Gemfile</code> and cached by Docker so that installing the actual <code>Gemfile</code> will be faster. The  contents and versions in this minimal <code>Gemfile</code> won't affect the app, since the app still relies on the actual one.
 
-* Database creation
+The following are parts of <code>Dockerfile</code> that should be configured, marked as <code>TODO</code>.
 
-* Database initialization
+1. <code>FROM ruby:2.2-slim</code> defines the base Docker image to be used. Ruby images can be found at https://hub.docker.com/_/ruby
 
-* How to run the test suite
+1. <code>ENV RAILS_ROOT /var/www/sample_app</code> defines where the app will run in the Docker container.
 
-* Services (job queues, cache servers, search engines, etc.)
+1. <code>RUN apt-get install -y mysql-client libmysqlclient-dev</code> installs non-RubyGems dependencies for <code>mysql2</code> gem. <code>pg</code> and older version of <code>nokogiri</code> required by rails also depend on non-RubyGems libraries.
 
-* Deployment instructions
+1. Sometimes <code>bundle install</code> may fail before some particular tweaks are made. These tweaks can be placed here.
 
-* ...
+=== Docker Compose
 
+<code>docker-compose.yml</code> defines how to organize multiple Docker containers as services into a single application, and allows for additional configurations for each container.
 
-Please feel free to use a different markup language if you do not plan to run
-<tt>rake doc:app</tt>.
+The following are the important labels in the file.
+
+command::
+  The command that will be run when the container starts. Overrides <code>COMMAND</code> in <code>Dockerfile</code>.
+  Should be placed in brackets to be <code>exec</code>ed and keeps PID = 1.
+  
+env_file::
+  The list of environment variables to be set. Sensitive strings such as database password can be place here.
+  
+ports::
+  Expose ports of the container and provide mapping between ports of the Docker Engine (as in <code>192.168.99.100:*3000*</code>) and ports of the container (as in <code>rails s -p *3000*</code>
+  
+volumes::
+  Mounts directories of the host system to the container.
+  See "Volume Mounting" section for problems caused by this feature.
+
+image::
+  Directly use a Docker base image without a <code>Dockerfile</code> build
+
+=== Ignore
+
