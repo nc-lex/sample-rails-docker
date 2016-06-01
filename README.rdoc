@@ -34,7 +34,7 @@ env_file::
   The list of environment variables to be set. Sensitive strings such as database password can be place here.
   
 ports::
-  Expose ports of the container and provide mapping between ports of the Docker Engine (as in <code>192.168.99.100:*3000*</code>) and ports of the container (as in <code>rails s -p *3000*</code>
+  Expose ports of the container and provide mapping between ports of the Docker Engine (as in <code>192.168.99.100:*3000*</code>) and ports of the container (as in <code>rails s -p *3000*</code>)
   
 volumes::
   Mounts directories of the host system to the container.
@@ -44,4 +44,8 @@ image::
   Directly use a Docker base image without a <code>Dockerfile</code> build
 
 === Ignore
+
+<code>.dockerignore</code> defines files to be excluded when copied, etc in <code>Dockerfile</code>
+
+<code>.gitignore</code> should include <code>.docker/.env</code>
 
