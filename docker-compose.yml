@@ -1,40 +1,40 @@
-# service configuration for our dockerized Rails app
+# Service configuration for our dockerized Rails app
 app:
 
-  # use the Dockerfile next to this file
+  # Use the Dockerfile next to this file to build the Docker image
   build: .
 
-    # makes the app container aware of the DB container
+  # Make the app container aware of the DB container
   links:
     - db
 
   # Use the "exec" form of CMD so Nginx shuts down gracefully on SIGTERM (i.e. `docker stop`)
   command: [ '.docker/entrypoint.sh' ]
 
-  # sources environment variable configuration for our app
+  # Source environment variable configuration for our app
   env_file: .docker/.env
 
-  # expose the port we configured server to bind to
+  # Expose the port we configured server to bind to
   ports:
     - "3000:3000"
 
-  # map our application source code, in full, to the application root of our container
+  # Map our application source code, in full, to the application root of our container
   volumes:
     - .:/var/www/sample_app
-    # - .docker:/var/www/sample_app/.docker
 
+  # Mount data directories of the database service to the app service for easier backup, etc
   volumes_from:
     - db
 
 
-# service configuration for our database
+# Service configuration for our database
 db:
-  # use the preferred version of the official MySQL image
+  # Use the preferred version of the official MySQL image
   image: mysql:5.7.12
 
-  # sources environment variable configuration for our app
+  # Source environment variable configuration for our app
   env_file: .docker/.env
 
-  # persist the database between containers by storing it in a volume
+  # Persist the database between containers by storing it in a volume
   # volumes:
   #   - .docker/db:/var/lib/mysql
