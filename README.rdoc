@@ -52,6 +52,10 @@ image::
 
 In <code>config/database.yml</code>, <code>host</code> should be set to <code>db</code> to connect to the database service defined in <code>docker-compose.yml</code>
 
+Alternatively, set <code>DATABASE_URL</code> in <code>.docker/.env</code> according to the following format.
+
+  DATABASE_URL=<adapter>://<username>:<password>@db/<database>?encoding=<encoding>&pool=<pool>
+  
 === Ignore
 
 <code>.dockerignore</code> defines files to be excluded when copied, etc in <code>Dockerfile</code>.
@@ -60,11 +64,11 @@ In <code>config/database.yml</code>, <code>host</code> should be set to <code>db
 
 == Usage
 
-* Starts "Docker Quickstart Terminal" from Launchpad. After it completes startup it will display the current Docker IP address. It will be referred to as <code>[DockerHost]</code> later.
+* Starts "Docker Quickstart Terminal" from Launchpad. After it completes startup it will display the current Docker IP address. It will be referred to as <code><DockerHost></code> later.
 
   Alternatively, after the "Docker Quickstart Terminal" completes startup, an independent terminal with the following environment variables set (in <code>~/.bash_profile</code>, etc) will also work.
 
-    export DOCKER_HOST=tcp://[DockerHost]:2376
+    export DOCKER_HOST=tcp://<DockerHost>:2376
     export DOCKER_CERT_PATH=/Users/<Username>/.docker/machine/machines/default
     export DOCKER_TLS_VERIFY=1
     export DOCKER_MACHINE_NAME=default
@@ -80,7 +84,7 @@ In <code>config/database.yml</code>, <code>host</code> should be set to <code>db
     rake db:create
     rake db:schema:load
 
-* It might help to put <code>[DockerHost] dockerhost</code> in the <code>hosts</code> file.
+* It might help to put <code><DockerHost> dockerhost</code> in the <code>hosts</code> file.
 
 == Issues
 
