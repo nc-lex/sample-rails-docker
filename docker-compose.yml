@@ -9,7 +9,7 @@ app:
     - db
 
   # Use the "exec" form of CMD so Nginx shuts down gracefully on SIGTERM (i.e. `docker stop`)
-  command: [ '.docker/startup.sh' ]
+  command: [ '.docker/entrypoint.sh' ]
 
   # sources environment variable configuration for our app
   env_file: .docker/.env
@@ -21,12 +21,15 @@ app:
   # map our application source code, in full, to the application root of our container
   volumes:
     - .:/var/www/sample_app
+    # - .docker:/var/www/sample_app/.docker
+
+  volumes_from:
+    - db
 
 
 # service configuration for our database
 db:
-  # use the preferred version of the official Postgres image
-  # see https://hub.docker.com/_/postgres/
+  # use the preferred version of the official MySQL image
   image: mysql:5.7.12
 
   # sources environment variable configuration for our app
