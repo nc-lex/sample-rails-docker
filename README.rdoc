@@ -55,12 +55,12 @@ In <code>config/database.yml</code>, <code>host</code> should be set to <code>db
 
 == Usage
 
-* Starts "Docker Quickstart Terminal" from Launchpad.
+* Starts "Docker Quickstart Terminal" from Launchpad. After it completes startup it will display the current Docker IP address. It will be referred to as <DockerHost> laster.
 
 Alternatively, after the "Docker Quickstart Terminal" completes startup, an independent terminal with the following environment variables set (in <code>~/.bash_profile</code>, etc) will also work.
 
-  export DOCKER_HOST=tcp://<IP address in Docker Quickstart Terminal>:2376
-  export DOCKER_CERT_PATH=/Users/<username>/.docker/machine/machines/default
+  export DOCKER_HOST=tcp://<DockerHost>:2376
+  export DOCKER_CERT_PATH=/Users/<Username>/.docker/machine/machines/default
   export DOCKER_TLS_VERIFY=1
   export DOCKER_MACHINE_NAME=default
 
@@ -69,3 +69,5 @@ Alternatively, after the "Docker Quickstart Terminal" completes startup, an inde
 * Run <code>.docker/bash</code> to start a console in the app container for debugging, etc.
 
   Note that <code>.docker/bash -s db</code> connects to the database container.
+
+* It might help to put <code><DockerHost> dockerhost</code> in the <code>hosts</code> file.
