@@ -2,23 +2,24 @@ sqlite: &sqlite
   adapter: sqlite3
   pool: 5
   timeout: 5000
-  host: db
+  host: localhost
 
 postgres: &postgres
   adapter: postgresql
   encoding: unicode
   pool: 5
+  host: <%= (host = ENV['POSTGRES_HOST']) ? host : localhost %>
   username: postgres
   password: <%= ENV['POSTGRES_PASSWORD'] %>
-  host: db
+
 
 mysql: &mysql
   adapter: mysql2
   encoding: utf8
   pool: 5
+  host: <%= (host = ENV['MYSQL_HOST']) ? host : localhost %>
   username: root
   password: <%= ENV['MYSQL_ROOT_PASSWORD'] %>
-  host: db
 
 development:
   <<: *mysql

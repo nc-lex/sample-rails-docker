@@ -37,4 +37,4 @@ db:
 
   # Persist the database between containers by storing it in a volume
   # volumes:
-  #   - .docker/db:/var/lib/mysql
+  #   - .docker/mysql:/var/lib/mysql
