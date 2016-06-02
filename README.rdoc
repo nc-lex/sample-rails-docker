@@ -61,7 +61,7 @@ Alternatively, set <code>DATABASE_URL</code> in <code>.docker/.env</code> accord
   
 === Ignore
 
-<code>.dockerignore</code> defines files to be excluded when copied, etc in <code>Dockerfile</code>.
+<code>.dockerignore</code> defines files to be excluded when copied, etc in <code>Dockerfile</code>. Files won't be excluded when mounted.
 
 <code>.gitignore</code> should include <code>.docker/.env</code>.
 
@@ -94,7 +94,7 @@ Alternatively, set <code>DATABASE_URL</code> in <code>.docker/.env</code> accord
 
 === Updating a Gemfile
 
-* Run <code>docker-compose build</code> after <code>Gemfile</code> is updated.
+* Exit all containers, and run <code>docker-compose build</code> after <code>Gemfile</code> is updated.
 
 == Issues
 
@@ -103,6 +103,8 @@ Alternatively, set <code>DATABASE_URL</code> in <code>.docker/.env</code> accord
 http://i.imgur.com/oUTQQh7.png
 
 As shown in the graph above, Docker can mount host directories directly as container volumes. Normally it's used to mount the source folder to avoid <code>docker-compose build</code> after every code update. However, this creates some issues.
+
+* In the <code>development</code> environment, Rails monitors on the file system to reload any changes in the Ruby source files. The monitoring may not work very well in the mounted directory, leading to a delay between file updates and changes in the browser.
 
 * Permissions on the mounted file system originates from the host file system, and cannot be altered by the container.
 
@@ -115,3 +117,9 @@ As shown in the graph above, Docker can mount host directories directly as conta
         - db
       
   For example, declaring the above in <code>docker-compose.yml</code> allows the app container to access the data directory of the database container by the same path (e.g. <code>/var/lib/mysql</code>).
+
+== Troubleshooting
+
+* Run <code>.docker/scripts/cleanup.sh</code> will delete any non-running containers, dangling images, and dangling volumes.
+
+* The entrypoint script will automatically initialize the Rails database. Deleting the <code>tmp/init</code> file forces it to initialize again.
