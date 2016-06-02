@@ -93,6 +93,10 @@ Alternatively, set <code>DATABASE_URL</code> in <code>.docker/.env</code> accord
 * It might help to put <code><DockerHost> dockerhost</code> in the <code>hosts</code> file.
 
   Open <code>dockerhost:3000</code> in browser to see the running app.
+  
+* Press <code>Ctrl + C</code> to stop the containers.
+  
+* Alternatively, run <code>docker-compose start</code> to run the containers in background, <code>docker-compose stop</code> to stop them, and <code>docker-compose logs</code> to check the outputs of the containers.
 
 == Issues
 
