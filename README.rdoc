@@ -104,7 +104,9 @@ Alternatively, set <code>DATABASE_URL</code> in <code>.docker/.env</code> accord
 
 http://i.imgur.com/oUTQQh7.png
 
-As shown in the graph above, Docker can mount host directories directly as container volumes. Normally it's used to mount the source folder to avoid <code>docker-compose build</code> after every code update. However, this creates some issues.
+As shown in the graph above, Docker can mount host directories directly as container volumes. Normally it's used to mount the source folder to avoid <code>docker-compose build</code> after every code update on the host. Changes made by the container (such as an update to <code>vendor/cache</code> by <code>bundle package</code>) will also be stored by the host.
+
+However, this creates some issues.
 
 * In the <code>development</code> environment, Rails monitors on the file system to reload any changes in the Ruby source files. The monitoring may not work very well in the mounted directory, leading to a delay between file updates and changes in the browser.
 
