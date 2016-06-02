@@ -30,11 +30,11 @@ WORKDIR $RAILS_ROOT
 
 # TODO #3
 # Install additional Linux packages
-RUN apt-get update -qq && apt-get install -y vim                                # vim
-RUN apt-get update -qq && apt-get install -y mysql-client libmysqlclient-dev    # mysql2
-# RUN apt-get update -qq && apt-get install -y git                              # git
 # RUN apt-get update -qq && apt-get install -y libxslt-dev libxml2-dev          # nokogiri, < 1.6.4
+RUN apt-get update -qq && apt-get install -y mysql-client libmysqlclient-dev    # mysql2
 # RUN apt-get update -qq && apt-get install -y libpq-dev                        # pg
+RUN apt-get update -qq && apt-get install -y vim                                # vim
+# RUN apt-get update -qq && apt-get install -y git                              # git
 
 # TODO #4
 # Tweak the system for some particular gem install errors

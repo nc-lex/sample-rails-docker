@@ -36,5 +36,5 @@ db:
   env_file: .docker/.env
 
   # Persist the database between containers by storing it in a volume
-  # volumes:
-  #   - .docker/mysql:/var/lib/mysql
+  volumes:
+    - mysql:/var/lib/mysql
