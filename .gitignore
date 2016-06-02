@@ -16,11 +16,8 @@
 !/log/.keep
 /tmp
 
-# Ignore Docker environment variables config.
-/.docker/.env
-
-# Ignore Docker database
-/.docker/db
-
 # Ignore history files
 /.byebug_history
+
+# Ignore Docker environment variables.
+/.docker/.env

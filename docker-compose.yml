@@ -6,10 +6,10 @@ app:
 
   # Make the app container aware of the DB container
   links:
-    - db
+    - db:db
 
   # Use the "exec" form of CMD so Nginx shuts down gracefully on SIGTERM (i.e. `docker stop`)
-  command: [ '.docker/entrypoint.sh' ]
+  command: [ ".docker/entrypoint.sh" ]
 
   # Source environment variable configuration for our app
   env_file: .docker/.env

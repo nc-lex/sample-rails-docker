@@ -8,7 +8,7 @@ postgres: &postgres
   adapter: postgresql
   encoding: unicode
   pool: 5
-  host: <%= (host = ENV['POSTGRES_HOST']) ? host : localhost %>
+  host: <%= (host = ENV['INFO_DATABASE_HOST']) ? host : 'localhost' %>
   username: postgres
   password: <%= ENV['POSTGRES_PASSWORD'] %>
 
@@ -17,7 +17,7 @@ mysql: &mysql
   adapter: mysql2
   encoding: utf8
   pool: 5
-  host: <%= (host = ENV['MYSQL_HOST']) ? host : localhost %>
+  host: <%= (host = ENV['INFO_DATABASE_HOST']) ? host : 'localhost' %>
   username: root
   password: <%= ENV['MYSQL_ROOT_PASSWORD'] %>
 
