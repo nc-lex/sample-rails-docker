@@ -45,8 +45,11 @@ ports::
   See "Usage" section for more about <code>dockerhost</code>.
   
 volumes::
-  Mounts directories of the host system to the container.
-  See "Volume Mounting" section for issues caused by this feature.
+  * If a host path is specified before <code>:</code>, mounts directories of the host system to the container.
+  
+    See "Volume Mounting" section for issues caused by this feature.
+    
+  * If a name is specified before <code>:</code>, declares the container folder as a named volume which preserves data even if the container is deleted.
 
 image::
   Directly use a Docker base image without a <code>Dockerfile</code> build.
