@@ -72,10 +72,12 @@ Alternatively, set <code>DATABASE_URL</code> in <code>.docker/.env</code> accord
 
 * Starts "Docker Quickstart Terminal" from Launchpad. After it completes startup it will display the current Docker IP address. It will be referred to as <code><DockerHost></code> later.
 
+  Run <code>docker-machine ip</code> in Terminal returns <code><DockerHost></code>.
+
   Alternatively, after the "Docker Quickstart Terminal" completes startup, an independent terminal with the following environment variables set (in <code>~/.bash_profile</code>, etc) will also work.
 
-    export DOCKER_HOST=tcp://<DockerHost>:2376
-    export DOCKER_CERT_PATH=/Users/<Username>/.docker/machine/machines/default
+    export DOCKER_HOST=tcp://$(docker-machine ip):2376
+    export DOCKER_CERT_PATH=~/.docker/machine/machines/default
     export DOCKER_TLS_VERIFY=1
     export DOCKER_MACHINE_NAME=default
 
@@ -89,6 +91,8 @@ Alternatively, set <code>DATABASE_URL</code> in <code>.docker/.env</code> accord
   Note that <code>.docker/bash -s db</code> connects to the database container.
 
 * It might help to put <code><DockerHost> dockerhost</code> in the <code>hosts</code> file.
+
+  Open <code>dockerhost:3000</code> in browser to see the running app.
 
 == Issues
 
