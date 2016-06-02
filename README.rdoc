@@ -90,10 +90,6 @@ Alternatively, set <code>DATABASE_URL</code> in <code>.docker/.env</code> accord
 
 * It might help to put <code><DockerHost> dockerhost</code> in the <code>hosts</code> file.
 
-=== Updating a Gemfile
-
-* Exit all containers, and run <code>docker-compose build</code> after <code>Gemfile</code> is updated.
-
 == Issues
 
 === Volume Mounting
