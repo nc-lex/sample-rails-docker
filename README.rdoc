@@ -124,4 +124,8 @@ As shown in the graph above, Docker can mount host directories directly as conta
 
 * Run <code>.docker/scripts/cleanup.sh</code> will delete any non-running containers, dangling images, and dangling volumes.
 
-* The entrypoint script will automatically initialize the Rails database. Deleting the <code>tmp/init</code> file forces it to initialize again.
+  Run <code>docker-compose rm</code> to remove containers in current Docker Compose context (so that they will be recreated from images when started).
+
+* The entrypoint script will automatically initialize the Rails database. Deleting <code>tmp/init</code> forces it to initialize again.
+
+* Do not set RAILS_ENV or MYSQL_HOST in <code>.docker/.env</code>
