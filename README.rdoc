@@ -30,7 +30,7 @@ build::
   Call <code>docker build</code> with the <code>Dockerfile</code> specified to build the image for the service container.
   
 links::
-  Allows connecting to another service by its service name, or an alias specified.
+  Allows connecting to another service by its service name, or an alias if specified.
 
 command::
   The command that will be run when the container starts. Overrides <code>COMMAND</code> in <code>Dockerfile</code>.
