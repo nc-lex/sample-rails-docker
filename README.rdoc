@@ -76,7 +76,10 @@ Alternatively, set <code>DATABASE_URL</code> in <code>.docker/.env</code> accord
     export DOCKER_TLS_VERIFY=1
     export DOCKER_MACHINE_NAME=default
 
-* Go to the app root directory, and run <code>docker-compose up</code>.
+* Go to the app root directory, and run 
+
+    docker-compose build
+    docker-compose up
 
 * Run <code>.docker/bash</code> to start a console in the app container for debugging, etc.
 
@@ -88,6 +91,10 @@ Alternatively, set <code>DATABASE_URL</code> in <code>.docker/.env</code> accord
     rake db:schema:load
 
 * It might help to put <code><DockerHost> dockerhost</code> in the <code>hosts</code> file.
+
+=== Updating a Gemfile
+
+* Run <code>docker-compose build</code> after <code>Gemfile</code> is updated.
 
 == Issues
 
