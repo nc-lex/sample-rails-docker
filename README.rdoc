@@ -161,7 +161,7 @@ However, this creates some issues.
 
 Dinghy is a third-party tool to improve Docker on OS X. It creates its own Docker Machine using NFS, a faster file sharing system than the default VirtualBox file sharing.
 
-Dinghy addresses the #1 issue. For example, through NFS file sharing <code>rake test</code> for this sample app takes around 1.2x time it takes on the host. (In comparison, through VirtualBox file shares it takes around 2.0x time)
+Dinghy addresses the #1 issue. For example, through NFS file sharing <code>rake test</code> for this sample app takes around 1.4x time it takes on the host. (In comparison, through VirtualBox file shares it takes around 2.4x time)
 
 Run <code>.docker/scripts/install-dinghy.sh</code> to install Dinghy, then run <code>dinghy up</code> to start Dinghy daemon if it's not running. Run <code>. .docker/scripts/start-dinghy.sh</code> (or use <code>~/.bash_profile</code>, etc) to set environment variables for Dinghy.
 
