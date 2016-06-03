@@ -135,11 +135,13 @@ As shown in the graph above, Docker can mount host directories directly as conta
 
 However, this creates some issues.
 
-* In the <code>development</code> environment, Rails monitors on the file system to reload any changes in the Ruby source files. The monitoring may not work very well in the mounted directory, leading to a delay between file updates and changes in the browser.
+1. The extra layer of Docker Machine on OS X slows the mount down. From the container perspective, the host directories referred here are actually Docker Machine folders, which are the host directories shared by Docker Machine through VirtualBox file sharing.
 
-* Permissions on the mounted file system originates from the host file system, and cannot be altered by the container.
+1. In the <code>development</code> environment, Rails monitors on the file system to reload any changes in the Ruby source files. The monitoring may not work very well in the mounted directory, leading to a delay between file updates and changes in the browser.
 
-  MySQL and PostgreSQL will attempt to take ownership of its data directory. Mounting the data directory to the host (for backing up, etc) will prevent them from doing so and successfully starting up.
+1. Permissions on the mounted file system originates from the host file system, and cannot be altered by the container.
+
+* MySQL and PostgreSQL will attempt to take ownership of its data directory. Mounting the data directory to the host (for backing up, etc) will prevent them from doing so and successfully starting up.
   
   However, their corresponding Docker images define their data directories as volumes, so it's easy to access it from another container.
   
@@ -148,6 +150,14 @@ However, this creates some issues.
         - db
       
   For example, declaring the above in <code>docker-compose.yml</code> allows the app container to access the data directory of the database container by the same path (e.g. <code>/var/lib/mysql</code>).
+  
+=== Possible Solutions
+
+==== Dinghy
+
+Dinghy is a third-party tool to improve Docker on OS X. It creates its own Docker Machine using NFS, a faster file sharing system than the default VirtualBox file sharing.
+
+Dinghy addresses the #1 issue. For example, through NFS file sharing <code>rake test</code> for this sample app takes around 1.2x time it takes on the host. (In comparison, through VirtualBox file shares it takes around 2.0x time)
 
 == Tips
 
