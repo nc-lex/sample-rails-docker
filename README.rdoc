@@ -10,6 +10,23 @@ http://i.imgur.com/6xHD7Kl.png
 
 OS X doesn't have the required Linux kernel. Therefore, when running on OS X, Docker runs on a Linux virtual machine (created by Docker Machine).
 
+=== Vocabulary
+
+container::
+  A Docker instance that emulates a computer.
+  
+image::
+  The "base class" of containers. Defines how a container is created. <code>debian</code>, <code>mysql</code> are among the useful images. They are built from steps defined in a <code>Dockerfile</code>
+  
+Docker Engine:
+  Builds and manages Docker images. Runs and manages Docker containers.
+  
+Docker Compose:
+  Organize multiple Docker containers. Many of its commands resemble the ones of Docker Engine.
+  
+Docker Machine:
+  A virtual machine tool to create a Linux environment for Docker to run on Windows and OS X.
+
 == Configuration
 
 === Docker Engine
