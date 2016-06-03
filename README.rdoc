@@ -147,13 +147,13 @@ However, this creates some issues.
 
 * MySQL and PostgreSQL will attempt to take ownership of its data directory. Mounting the data directory to the host (for backing up, etc) will prevent them from doing so and successfully starting up.
   
-  However, their corresponding Docker images define their data directories as volumes, so it's easy to access it from another container.
+  However, their corresponding Docker images define their data directories as volumes, so it's easy to access it from another container. For example, declaring the following lines in <code>docker-compose.yml</code> allows the app container to access the data directory of the database container by the same path (e.g. <code>/var/lib/mysql</code>).
   
     app:
       volumes_from:
         - db
-      
-  For example, declaring the above in <code>docker-compose.yml</code> allows the app container to access the data directory of the database container by the same path (e.g. <code>/var/lib/mysql</code>).
+  
+  The volumes can also be directly accessed in the virtual machine through <code>docker-machine ssh</code>.
   
 === Possible Solutions
 
@@ -164,6 +164,8 @@ Dinghy (https://github.com/codekitchen/dinghy) is a third-party tool to improve 
 Dinghy addresses the #1 issue. For example, through NFS file sharing <code>rake test</code> for this sample app takes around 1.4x time it takes on the host. (In comparison, through VirtualBox file shares it takes around 2.4x time)
 
 Run <code>.docker/scripts/install-dinghy.sh</code> to install Dinghy, then run <code>dinghy up</code> to start Dinghy daemon if it's not running. Run <code>. .docker/scripts/start-dinghy.sh</code> (or use <code>~/.bash_profile</code>, etc) to set environment variables for Dinghy.
+
+This virtual machine can be accessed through <code>dinghy ssh</code>.
 
 == Tips
 
