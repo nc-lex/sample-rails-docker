@@ -18,13 +18,13 @@ container::
 image::
   The "base class" of containers. Defines how a container is created. <code>debian</code>, <code>mysql</code> are among the useful images. They are built from steps defined in a <code>Dockerfile</code>
   
-Docker Engine:
+Docker Engine::
   Builds and manages Docker images. Runs and manages Docker containers.
   
-Docker Compose:
+Docker Compose::
   Organize multiple Docker containers. Many of its commands resemble the ones of Docker Engine.
   
-Docker Machine:
+Docker Machine::
   A virtual machine tool to create a Linux environment for Docker to run on Windows and OS X.
 
 == Configuration
