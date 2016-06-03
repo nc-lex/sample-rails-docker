@@ -159,7 +159,7 @@ However, this creates some issues.
 
 ==== Dinghy
 
-Dinghy is a third-party tool to improve Docker on OS X. It creates its own Docker Machine using NFS, a faster file sharing system than the default VirtualBox file sharing.
+Dinghy (https://github.com/codekitchen/dinghy) is a third-party tool to improve Docker on OS X. It creates its own Docker Machine using NFS, a faster file sharing system than the default VirtualBox file sharing.
 
 Dinghy addresses the #1 issue. For example, through NFS file sharing <code>rake test</code> for this sample app takes around 1.4x time it takes on the host. (In comparison, through VirtualBox file shares it takes around 2.4x time)
 
