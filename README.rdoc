@@ -1,5 +1,15 @@
 = Sample Rails app on Docker
 
+== Introduction to Docker
+
+http://i.imgur.com/2c5iYX4.png
+
+Docker is a Linux container and virtualization tool. It's more lightweight than virtual machines, that the host Linux kernel is shared by all Docker instances. Similar to virtual machines, each instance runs on an independent file system. The file system of Docker is layered, allows easy management of incremental changes and version control.
+
+http://i.imgur.com/6xHD7Kl.png
+
+OS X doesn't have the required Linux kernel. Therefore, when running on OS X, Docker runs on a Linux virtual machine (created by Docker Machine).
+
 == Configuration
 
 === Docker Engine
@@ -122,7 +132,7 @@ However, this creates some issues.
       
   For example, declaring the above in <code>docker-compose.yml</code> allows the app container to access the data directory of the database container by the same path (e.g. <code>/var/lib/mysql</code>).
 
-== Troubleshooting
+== Tips
 
 * Run <code>.docker/scripts/cleanup.sh</code> will delete any non-running containers, dangling images, and dangling volumes.
 
@@ -130,4 +140,8 @@ However, this creates some issues.
 
 * The entrypoint script will automatically initialize the Rails database. Deleting <code>tmp/init</code> forces it to initialize again.
 
-* Do not set RAILS_ENV or MYSQL_HOST in <code>.docker/.env</code>
+* Do not set RAILS_ENV or MYSQL_HOST in <code>.docker/.env</code>.
+
+* <code>docker-compose build</code> can be run routinely to update the Docker images.
+
+  Note that during <code>docker-compose build</code> stage, changes to the context folder (such as updating <code>Gemfile.lock</code> and <code>vendor/cache</code>) will be made on the container file system, and thus will be hidden when the context folder from the host is mounted by Docker Compose. Therefore, run <code>bundle</code> directly in the container console first.
