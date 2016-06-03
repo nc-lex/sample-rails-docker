@@ -9,9 +9,9 @@ if [ ! -f $INIT_FILE ]; then
 
     bundle exec rake db:create
     bundle exec rake db:migrate
-  fi
 
-  touch $INIT_FILE
+    touch $INIT_FILE
+  fi
 fi
 
 # Remove server pid file that may be left by an unexpected shutdown
