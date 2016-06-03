@@ -16,7 +16,7 @@ container::
   A Docker instance that emulates a computer.
   
 image::
-  The "base class" of containers. Defines how a container is created. <code>debian</code>, <code>mysql</code> are among the useful images. They are built from steps defined in a <code>Dockerfile</code>
+  The "base class" of containers. Defines how a container is created. <code>debian</code>, <code>ubuntu</code>, <code>ruby</code>, and <code>mysql</code> are among the popular images. They are built from steps defined in a <code>Dockerfile</code>.
   
 Docker Engine::
   Builds and manages Docker images. Runs and manages Docker containers.
