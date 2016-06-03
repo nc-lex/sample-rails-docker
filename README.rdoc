@@ -29,6 +29,10 @@ Docker Machine::
 
 == Configuration
 
+=== Installation
+
+See https://docs.docker.com/engine/installation/mac/
+
 === Docker Engine
 
 <code>Dockerfile</code> defines how a single Docker image is built.
@@ -101,12 +105,14 @@ Alternatively, set <code>DATABASE_URL</code> in <code>.docker/.env</code> accord
 
   Run <code>docker-machine ip</code> in Terminal returns <code><DockerHost></code>.
 
-  Alternatively, after the "Docker Quickstart Terminal" completes startup, an independent terminal with the following environment variables set (in <code>~/.bash_profile</code>, etc) will also work.
+  Alternatively, after running <code>docker-machine start</code>, an independent terminal with the following environment variables set (in <code>~/.bash_profile</code>, etc) will also work.
 
     export DOCKER_HOST=tcp://$(docker-machine ip):2376
     export DOCKER_CERT_PATH=~/.docker/machine/machines/default
     export DOCKER_TLS_VERIFY=1
     export DOCKER_MACHINE_NAME=default
+    
+  (See <code>.docker/scripts/start-default.sh</code>)
 
 * Go to the app root directory, and run 
 
@@ -120,8 +126,6 @@ Alternatively, set <code>DATABASE_URL</code> in <code>.docker/.env</code> accord
 * It might help to put <code><DockerHost> dockerhost</code> in the <code>hosts</code> file.
 
   Open <code>dockerhost:3000</code> in browser to see the running app.
-  
-* Press <code>Ctrl + C</code> to stop the containers.
   
 * Alternatively, run <code>docker-compose start</code> to run the containers in background, <code>docker-compose stop</code> to stop them, and <code>docker-compose logs</code> to check the outputs of the containers.
 
@@ -158,6 +162,8 @@ However, this creates some issues.
 Dinghy is a third-party tool to improve Docker on OS X. It creates its own Docker Machine using NFS, a faster file sharing system than the default VirtualBox file sharing.
 
 Dinghy addresses the #1 issue. For example, through NFS file sharing <code>rake test</code> for this sample app takes around 1.2x time it takes on the host. (In comparison, through VirtualBox file shares it takes around 2.0x time)
+
+Run <code>.docker/scripts/install-dinghy.sh</code> to install Dinghy, then run <code>dinghy up</code> to start Dinghy daemon if it's not running. Run <code>. .docker/scripts/start-dinghy.sh</code> (or use <code>~/.bash_profile</code>, etc) to set environment variables for Dinghy.
 
 == Tips
 
