@@ -16,7 +16,7 @@ app:
 
   # Expose the port we configured server to bind to
   ports:
-    - "3000:3000"
+    - "3001:3000"
 
   # Map our application source code, in full, to the application root of our container
   volumes:
@@ -37,4 +37,4 @@ db:
 
   # Persist the database between containers by storing it in a volume
   volumes:
-    - mysql:/var/lib/mysql
+    - sample_app_mysql:/var/lib/mysql
