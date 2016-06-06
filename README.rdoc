@@ -80,7 +80,7 @@ volumes::
   
     See "Volume Mounting" section for issues caused by this feature.
     
-  * If a name is specified before <code>:</code>, declares the container folder as a named volume which preserves data even if the container is deleted.
+  * If a name is specified before <code>:</code>, mounts directories managed by Docker to the container, which also preserves data even if the container is deleted.
 
 image::
   Directly use a Docker base image without a <code>Dockerfile</code> build.
@@ -143,17 +143,17 @@ However, this creates some issues.
 
 1. In the <code>development</code> environment, Rails monitors on the file system to reload any changes in the Ruby source files. The monitoring may not work very well in the mounted directory, leading to a delay between file updates and changes in the browser.
 
-1. Permissions on the mounted file system originates from the host file system, and cannot be altered by the container.
+1. For mounted host directories, permissions on the mounted file system originates from the host file system, and cannot be altered by the container.
 
 * MySQL and PostgreSQL will attempt to take ownership of its data directory. Mounting the data directory to the host (for backing up, etc) will prevent them from doing so and successfully starting up.
   
-  However, their corresponding Docker images define their data directories as volumes, so it's easy to access it from another container. For example, declaring the following lines in <code>docker-compose.yml</code> allows the app container to access the data directory of the database container by the same path (e.g. <code>/var/lib/mysql</code>).
+* However, their corresponding Docker images define their data directories as volumes managed by Docker, so it's easy to access it from another container. For example, declaring the following lines in <code>docker-compose.yml</code> allows the app container to access the data directory of the database container by the same path (e.g. <code>/var/lib/mysql</code>).
   
     app:
       volumes_from:
         - db
   
-  The volumes can also be directly accessed in the virtual machine through <code>docker-machine ssh</code>.
+* Run <code>docker volume inspect <Volume></code> to find the actual volume path. They can be directly accessed in the virtual machine through <code>docker-machine ssh</code>. 
   
 === Possible Solutions
 
