@@ -60,7 +60,7 @@ The following are the important labels in the file.
 build::
   Call <code>docker build</code> with the <code>Dockerfile</code> specified to build the image for the service container.
   
-links::
+links SERVICE:ALIAS::
   Allows connecting to another service by its service name, or an alias if specified.
 
 command::
@@ -70,7 +70,7 @@ command::
 env_file::
   The list of environment variables to be set. Sensitive strings such as database password can be place here.
   
-ports::
+ports HOST:CONTAINER::
   Expose ports of the container and provide mapping between ports of the Docker Engine (as in <code>dockerhost:*3000*</code>) and ports of the container (as in <code>rails s -p *3000*</code>).
   
   See "Usage" section for more about <code>dockerhost</code>.
