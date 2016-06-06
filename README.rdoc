@@ -105,7 +105,7 @@ Alternatively, set <code>DATABASE_URL</code> in <code>.docker/.env</code> accord
 
   Run <code>docker-machine ip</code> in Terminal returns <code><DockerHost></code>.
 
-  Alternatively, after running <code>docker-machine start</code>, an independent terminal with the following environment variables set (in <code>~/.bash_profile</code>, etc) will also work.
+  Alternatively, after running <code>docker-machine start</code>, an independent terminal with <code>eval $(docker-machine env)</code> (in <code>~/.bash_profile</code>, etc) run, so that the following environment variables set will also work.
 
     export DOCKER_HOST=tcp://$(docker-machine ip):2376
     export DOCKER_CERT_PATH=~/.docker/machine/machines/default
@@ -163,7 +163,7 @@ Dinghy (https://github.com/codekitchen/dinghy) is a third-party tool to improve 
 
 Dinghy addresses the #1 issue. For example, through NFS file sharing <code>rake test</code> for this sample app takes around 1.4x time it takes on the host. (In comparison, through VirtualBox file shares it takes around 2.4x time)
 
-Run <code>.docker/scripts/install-dinghy.sh</code> to install Dinghy, then run <code>dinghy up</code> to start Dinghy daemon if it's not running. Run <code>. .docker/scripts/start-dinghy.sh</code> (or use <code>~/.bash_profile</code>, etc) to set environment variables for Dinghy.
+Run <code>.docker/scripts/install-dinghy.sh</code> to install Dinghy, then run <code>dinghy up</code> to start Dinghy daemon if it's not running. Run <code>eval $(dinghy env)</code> (or use <code>~/.bash_profile</code>, etc) to set environment variables for Dinghy.
 
 This virtual machine can be accessed through <code>dinghy ssh</code>.
 
