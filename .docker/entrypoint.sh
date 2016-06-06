@@ -3,7 +3,7 @@
 # Initialize the database
 INIT_FILE=tmp/init
 if [ ! -f $INIT_FILE ]; then
-  .docker/wait-for-it.sh -h $INFO_DATABASE_HOST -p $INFO_DATABASE_PORT -t 15
+  .docker/wait-for-it.sh -h $INFO_DATABASE_HOST -p $INFO_DATABASE_PORT -t 30
   if [ $? == "0" ]; then
     echo "Initializing Database..."
 
