@@ -109,18 +109,18 @@ Alternatively, set <code>DATABASE_URL</code> in <code>.docker/.env</code> accord
 
     docker-compose build
     docker-compose up
+    
+* Open <code><DockerHost>:3000</code> in browser to see the running app!
+
+  It might help to put <code><DockerHost> dockerhost</code> in the <code>hosts</code> file.
+
+=== Development
 
 * Run <code>.docker/bash</code> to start a console in the app container for debugging, etc.
 
   Note that <code>.docker/bash -s db</code> connects to the database container. Check <code>.docker/bash -h</code> for details.
   
 * <code>docker-compose up</code> will automatically starts the default app (Rails server in this project). Run <code>.docker/start -b</code> to prevent the default app from starting (e.g. when installing new gems). Check <code>.docker/start -h</code> for details.
-
-* It might help to put <code><DockerHost> dockerhost</code> in the <code>hosts</code> file.
-
-  Open <code>dockerhost:3000</code> in browser to see the running app.
-  
-* Alternatively, run <code>docker-compose start</code> to run the containers in background, <code>docker-compose stop</code> to stop them, and <code>docker-compose logs</code> to check the outputs of the containers.
 
 == Issues
 
