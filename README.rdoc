@@ -122,10 +122,6 @@ Alternatively, set <code>DATABASE_URL</code> in <code>.docker/.env</code> accord
   
 * <code>docker-compose up</code> will automatically starts the default app (Rails server in this project). Run <code>.docker/start -b</code> or <code>.docker/bash</code> when the container is stopped to prevent the default app from starting (e.g. when installing new gems). Check <code>.docker/start -h</code> for details.
 
-=== Maintenance
-
-* Run <code>docker-compose build</code> to rebuild the Docker image and recreate the containers to clean them up.
-
 == Issues
 
 === Volume Mounting
@@ -174,6 +170,6 @@ This virtual machine can be accessed through <code>dinghy ssh</code>.
 
 * Do not set RAILS_ENV or MYSQL_HOST in <code>.docker/.env</code>.
 
-* <code>docker-compose build</code> can be run routinely to update the Docker images.
+* <code>docker-compose build</code> can be run routinely to rebuild the Docker image and recreate the containers to clean them up.
 
   Note that during <code>docker-compose build</code> stage, changes to the context folder (such as updating <code>Gemfile.lock</code> and <code>vendor/cache</code>) will be made on the container file system, and thus will be hidden when the context folder from the host is mounted by Docker Compose. Therefore, run <code>bundle</code> directly in the container console first.
