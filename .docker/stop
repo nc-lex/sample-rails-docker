@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-ARG_SERVICE="app"
-
 while [[ $# > 0 ]]
 do
   key="$1"
@@ -18,11 +16,9 @@ do
 done
 
 if [[ -n "$ARG_HELP" ]]; then
-  echo "Start an interactive console in the container"
-  echo "Automatically starts the container if not running"
+  echo "Stop the Docker containers"
   echo "  -s, --service   Specify the container"
   exit 0
 fi
 
-.docker/start -s $ARG_SERVICE -b -d > /dev/null
-docker-compose exec $ARG_SERVICE /bin/bash
+docker-compose stop $ARG_SERVICE

@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+
+ARG_SERVICE="app"
+
+while [[ $# > 0 ]]
+do
+  key="$1"
+  case $key in
+    -h|--help)
+      ARG_HELP=YES
+    ;;
+    -s|--service)
+      ARG_SERVICE="$2"
+      shift
+    ;;
+    -b|--bash)
+      ARG_STARTBASH=YES
+    ;;
+    -d|--daemon)
+      ARG_DAEMON=YES
+    ;;
+  esac
+  shift
+done
+
+if [[ -n "$ARG_HELP" ]]; then
+  echo "Start a Docker container and its depencencies"
+  echo "  -s, --service   Specify the container"
+  echo "  -b, --bash      Waiting for bash instead of starting app server"
+  echo "  -d, --daemon    Start the container(s) in background"
+  exit 0
+fi
+
+waitBash() {
+  sleep 2
+
+  echo "Waiting for bash..."
+  echo "Run \"kill 1\" in bash to start the server"
+  docker-compose kill -s SIGUSR1 $ARG_SERVICE 2> /dev/null
+}
+
+if [[ -n "$ARG_STARTBASH" ]]; then
+  waitBash &
+fi
+
+if [[ -n "$ARG_DAEMON" ]]; then
+  docker-compose up -d $ARG_SERVICE
+else
+  docker-compose up $ARG_SERVICE
+fi
+
+wait $!
