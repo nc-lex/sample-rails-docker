@@ -122,6 +122,10 @@ Alternatively, set <code>DATABASE_URL</code> in <code>.docker/.env</code> accord
   
 * <code>docker-compose up</code> will automatically starts the default app (Rails server in this project). Run <code>.docker/start -b</code> or <code>.docker/bash</code> when the container is stopped to prevent the default app from starting (e.g. when installing new gems). Check <code>.docker/start -h</code> for details.
 
+=== Maintenance
+
+* Run <code>docker-compose build</code> to rebuild the Docker image and recreate the containers to clean them up.
+
 == Issues
 
 === Volume Mounting
