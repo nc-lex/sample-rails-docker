@@ -17,7 +17,7 @@ do
       ARG_STARTBASH=YES
     ;;
     -d|--daemon)
-      ARG_DAEMON=YES
+      ARG_DAEMON="-d"
     ;;
   esac
   shift
@@ -32,21 +32,17 @@ if [[ -n "$ARG_HELP" ]]; then
 fi
 
 waitBash() {
-  sleep 2
-
-  echo "Waiting for bash..."
-  echo "Run \"kill 1\" in bash to start the server"
-  docker-compose kill -s SIGUSR1 $ARG_SERVICE 2> /dev/null
+  while [[ -z "$OUTPUT_KILL" ]]; do
+    OUTPUT_KILL="$(docker-compose kill -s SIGUSR1 $ARG_SERVICE 2>&1)"
+    sleep 1
+  done
 }
 
 if [[ -n "$ARG_STARTBASH" ]]; then
   waitBash &
 fi
 
-if [[ -n "$ARG_DAEMON" ]]; then
-  docker-compose up -d $ARG_SERVICE
-else
-  docker-compose up $ARG_SERVICE
-fi
+docker-compose up $ARG_DAEMON $ARG_SERVICE
 
+trap "kill $!" SIGINT
 wait $!

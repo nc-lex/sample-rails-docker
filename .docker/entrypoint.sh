@@ -1,11 +1,21 @@
 #!/usr/bin/env bash
 
+printPrompt() {
+  echo "Run \"kill 1\" in bash to start the server"
+}
+
 waitBash() {
+  trap "printPrompt" SIGUSR1
+  echo "Waiting for bash..."
+  printPrompt
+
   trap "startServer" SIGTERM
   while true ; do sleep 1 ; done
 }
 
 startServer() {
+  trap - SIGUSR1 SIGTERM
+
   # Initialize the database
   INIT_FILE=tmp/init
   if [ ! -f $INIT_FILE ]; then
@@ -29,6 +39,6 @@ startServer() {
 }
 
 trap "waitBash" SIGUSR1
-sleep 3
+sleep 2
 
 startServer
