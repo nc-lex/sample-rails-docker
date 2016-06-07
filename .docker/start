@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+SIGWAITBASH=31
 ARG_SERVICE="app"
 
 while [[ $# > 0 ]]
@@ -33,7 +34,7 @@ fi
 
 waitBash() {
   while [[ -z "$OUTPUT_KILL" ]]; do
-    OUTPUT_KILL="$(docker-compose kill -s SIGUSR1 $ARG_SERVICE 2>&1)"
+    OUTPUT_KILL="$(docker-compose kill -s $SIGWAITBASH $ARG_SERVICE 2>&1)"
     sleep 1
   done
 }

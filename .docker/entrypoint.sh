@@ -1,11 +1,13 @@
 #!/usr/bin/env bash
 
+SIGWAITBASH=31
+
 printPrompt() {
   echo "Run \"kill 1\" in bash to start the server"
 }
 
 waitBash() {
-  trap "printPrompt" SIGUSR1
+  trap "printPrompt" $SIGWAITBASH
   echo "Waiting for bash..."
   printPrompt
 
@@ -14,7 +16,7 @@ waitBash() {
 }
 
 startServer() {
-  trap - SIGUSR1 SIGTERM
+  trap - $SIGWAITBASH SIGTERM
 
   # Initialize the database
   INIT_FILE=tmp/init
@@ -38,7 +40,7 @@ startServer() {
   exec bundle exec rails s -p 3000 -b 0.0.0.0
 }
 
-trap "waitBash" SIGUSR1
+trap "waitBash" $SIGWAITBASH
 sleep 2
 
 startServer
