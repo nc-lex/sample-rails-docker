@@ -34,7 +34,7 @@ WORKDIR $RAILS_ROOT
 RUN apt-get update -qq && apt-get install -y mysql-client libmysqlclient-dev    # mysql2
 # RUN apt-get update -qq && apt-get install -y libpq-dev                          # pg
 RUN apt-get update -qq && apt-get install -y vim                                # vim
-# RUN apt-get update -qq && apt-get install -y git                                # git
+RUN apt-get update -qq && apt-get install -y git                                # git
 
 # TODO #4
 # Tweak the system for some particular gem install errorså
