@@ -120,7 +120,7 @@ Alternatively, set <code>DATABASE_URL</code> in <code>.docker/.env</code> accord
 
   Note that <code>.docker/bash -s db</code> connects to the database container. Check <code>.docker/bash -h</code> for details.
   
-* <code>docker-compose up</code> will automatically starts the default app (Rails server in this project). Run <code>.docker/start -b</code> to prevent the default app from starting (e.g. when installing new gems). Check <code>.docker/start -h</code> for details.
+* <code>docker-compose up</code> will automatically starts the default app (Rails server in this project). Run <code>.docker/start -b</code> or <code>.docker/bash</code> when the container is stopped to prevent the default app from starting (e.g. when installing new gems). Check <code>.docker/start -h</code> for details.
 
 == Issues
 
