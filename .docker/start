@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 SIGWAITBASH=31
+SIGSKIPBASH=30
 ARG_SERVICE="app"
 
 while [[ $# > 0 ]]
@@ -32,15 +33,17 @@ if [[ -n "$ARG_HELP" ]]; then
   exit 0
 fi
 
-waitBash() {
+sendSignal() {
   while [[ -z "$OUTPUT_KILL" ]]; do
-    OUTPUT_KILL="$(docker-compose kill -s $SIGWAITBASH $ARG_SERVICE 2>&1)"
+    OUTPUT_KILL="$(docker-compose kill -s $1 $ARG_SERVICE 2>&1)"
     sleep 1
   done
 }
 
 if [[ -n "$ARG_STARTBASH" ]]; then
-  waitBash &
+  sendSignal $SIGWAITBASH &
+else
+  sendSignal $SIGSKIPBASH &
 fi
 
 docker-compose up $ARG_DAEMON $ARG_SERVICE

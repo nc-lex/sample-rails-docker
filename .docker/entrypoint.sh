@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 SIGWAITBASH=31
+SIGSKIPBASH=30
 
 printPrompt() {
   echo "Run \"kill 1\" in bash to start the server"
@@ -11,12 +12,12 @@ waitBash() {
   echo "Waiting for bash..."
   printPrompt
 
-  trap "startServer" SIGTERM
   while true ; do sleep 1 ; done
 }
 
 startServer() {
-  trap - $SIGWAITBASH SIGTERM
+  trap - $SIGWAITBASH $SIGSKIPBASH
+  trap "exit 1" SIGTERM
 
   # Initialize the database
   INIT_FILE=tmp/init
@@ -41,6 +42,7 @@ startServer() {
 }
 
 trap "waitBash" $SIGWAITBASH
+trap "startServer" $SIGSKIPBASH SIGTERM
 sleep 2
 
 startServer
