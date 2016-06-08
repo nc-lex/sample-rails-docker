@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-ARG_SERVICE="app"
+ARG_CONTAINER="app"
 
 while [[ $# > 0 ]]
 do
@@ -9,8 +9,8 @@ do
     -h|--help)
       ARG_HELP=YES
     ;;
-    -s|--service)
-      ARG_SERVICE="$2"
+    -c|--container)
+      ARG_CONTAINER="$2"
       shift
     ;;
   esac
@@ -20,9 +20,9 @@ done
 if [[ -n "$ARG_HELP" ]]; then
   echo "Start an interactive console in the container"
   echo "Automatically starts the container if not running"
-  echo "  -s, --service   Specify the container"
+  echo "  -c, --container   Specify the container"
   exit 0
 fi
 
-.docker/start -s $ARG_SERVICE -b -d 2>&1 | grep -v "up-to-date"
-docker-compose exec $ARG_SERVICE /bin/bash
+.docker/start -s $ARG_CONTAINER -b -d 2>&1 | grep -v "up-to-date"
+docker-compose exec $ARG_CONTAINER /bin/bash

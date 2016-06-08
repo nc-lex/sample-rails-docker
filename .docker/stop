@@ -7,8 +7,8 @@ do
     -h|--help)
       ARG_HELP=YES
     ;;
-    -s|--service)
-      ARG_SERVICE="$2"
+    -c|--container)
+      ARG_CONTAINER="$2"
       shift
     ;;
   esac
@@ -17,8 +17,8 @@ done
 
 if [[ -n "$ARG_HELP" ]]; then
   echo "Stop the Docker containers"
-  echo "  -s, --service   Specify the container"
+  echo "  -c, --container   Specify the container"
   exit 0
 fi
 
-docker-compose stop $ARG_SERVICE
+docker-compose stop $ARG_CONTAINER

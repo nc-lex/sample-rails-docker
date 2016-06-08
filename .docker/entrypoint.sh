@@ -2,6 +2,14 @@
 
 SIGWAITBASH=31
 SIGSKIPBASH=30
+FOLDER_TEMP=tmp/docker
+
+trap "waitBash" $SIGWAITBASH
+trap "startServer" $SIGSKIPBASH
+
+exitScript() {
+  exit 1
+}
 
 printPrompt() {
   echo "Run \"kill 1\" in bash to start the server"
@@ -9,6 +17,8 @@ printPrompt() {
 
 waitBash() {
   trap "printPrompt" $SIGWAITBASH
+  trap "startServer" SIGTERM
+
   echo "Waiting for bash..."
   printPrompt
 
@@ -17,11 +27,11 @@ waitBash() {
 
 startServer() {
   trap - $SIGWAITBASH $SIGSKIPBASH
-  trap "exit 1" SIGTERM
+  trap "exitScript" SIGTERM
 
   # Initialize the database
-  INIT_FILE=tmp/init
-  if [ ! -f $INIT_FILE ]; then
+  FILE_INIT=$FOLDER_TEMP/init
+  if [ ! -f $FILE_INIT ]; then
     .docker/wait-for-it.sh -h $INFO_DATABASE_HOST -p $INFO_DATABASE_PORT -t 30
     if [ $? == "0" ]; then
       echo "Initializing Database..."
@@ -29,7 +39,7 @@ startServer() {
       bundle exec rake db:create
       bundle exec rake db:schema:load
 
-      touch $INIT_FILE
+      touch $FILE_INIT
     fi
   fi
 
@@ -41,8 +51,33 @@ startServer() {
   exec bundle exec rails s -p 3000 -b 0.0.0.0
 }
 
-trap "waitBash" $SIGWAITBASH
-trap "startServer" $SIGSKIPBASH SIGTERM
-sleep 2
+if [[ $# == 0 ]]; then
+  FILE_ARGUMENT=$FOLDER_TEMP/args
+  if [ -f "$FILE_ARGUMENT" ]; then
+    ARGS=$(<"$FILE_ARGUMENT")
 
-startServer
+    echo $0 -a $ARGS
+    exec $0 -a $ARGS
+  else
+    sleep 2 &
+    wait $!
+
+    startServer
+  fi
+fi
+
+while [[ $# > 0 ]]
+do
+  key="$1"
+  case $key in
+    -a|--arguments)
+    ;;
+    -b|--bash)
+      waitBash
+    ;;
+    -s|--server)
+      startServer
+    ;;
+  esac
+  shift
+done

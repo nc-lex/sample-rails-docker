@@ -2,7 +2,8 @@
 
 SIGWAITBASH=31
 SIGSKIPBASH=30
-ARG_SERVICE="app"
+FOLDER_TEMP=tmp/docker
+ARG_CONTAINER="app"
 
 while [[ $# > 0 ]]
 do
@@ -11,15 +12,18 @@ do
     -h|--help)
       ARG_HELP=YES
     ;;
-    -s|--service)
-      ARG_SERVICE="$2"
+    -c|--container)
+      ARG_CONTAINER="$2"
       shift
-    ;;
-    -b|--bash)
-      ARG_STARTBASH=YES
     ;;
     -d|--daemon)
       ARG_DAEMON="-d"
+    ;;
+    -b|--bash)
+      ARG_ARGUMENTS="-b"
+    ;;
+    -s|--server)
+      ARG_ARGUMENTS="-s"
     ;;
   esac
   shift
@@ -27,26 +31,33 @@ done
 
 if [[ -n "$ARG_HELP" ]]; then
   echo "Start a Docker container and its depencencies"
-  echo "  -s, --service   Specify the container"
-  echo "  -b, --bash      Waiting for bash instead of starting app server"
-  echo "  -d, --daemon    Start the container(s) in background"
+  echo "  -c, --container   Specify the container"
+  echo "  -d, --daemon      Start the container(s) in background"
+  echo "  -b, --bash        Wait for bash"
+  echo "  -s, --server      Start app server"
   exit 0
 fi
 
 sendSignal() {
   while [[ -z "$OUTPUT_KILL" ]]; do
-    OUTPUT_KILL="$(docker-compose kill -s $1 $ARG_SERVICE 2>&1)"
+    OUTPUT_KILL="$(docker-compose kill -s $1 $ARG_CONTAINER 2>&1)"
     sleep 1
   done
 }
 
-if [[ -n "$ARG_STARTBASH" ]]; then
-  sendSignal $SIGWAITBASH &
-else
-  sendSignal $SIGSKIPBASH &
+sendArgument() {
+  mkdir -p "$FOLDER_TEMP"
+  FILE_ARGUMENT=$FOLDER_TEMP/args
+  echo "$*" > "$FILE_ARGUMENT"
+}
+
+if [[ -n "$ARG_ARGUMENTS" ]]; then
+  # sendSignal $SIGWAITBASH &
+  # sendSignal $SIGSKIPBASH &
+  sendArgument $ARG_ARGUMENTS
 fi
 
-docker-compose up $ARG_DAEMON $ARG_SERVICE
+docker-compose up $ARG_DAEMON $ARG_CONTAINER
 
-trap "kill $!" SIGINT
-wait $!
+# trap "kill $!" SIGINT
+# wait $!
