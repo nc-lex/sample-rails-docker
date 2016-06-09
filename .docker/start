@@ -3,18 +3,14 @@
 # SIGWAITBASH=31
 # SIGSKIPBASH=30
 FOLDER_TEMP=tmp/docker
-ARG_CONTAINER="app"
 
+ARG_CONTAINER=
 while [[ $# > 0 ]]
 do
   key="$1"
   case $key in
     -h|--help)
       ARG_HELP=YES
-    ;;
-    -c|--container)
-      ARG_CONTAINER="$2"
-      shift
     ;;
     -d|--daemon)
       ARG_DAEMON="-d"
@@ -25,13 +21,16 @@ do
     -s|--server)
       ARG_ARGUMENTS="-s"
     ;;
+    *)
+      ARG_CONTAINER="$ARG_CONTAINER $key"
+    ;;
   esac
   shift
 done
 
 if [[ -n "$ARG_HELP" ]]; then
   echo "Start a Docker container and its depencencies"
-  echo "  -c, --container   Specify the container"
+  echo "Usage:  $0 [OPTIONS] [CONTAINER...]"
   echo "  -d, --daemon      Start the container(s) in background"
   echo "  -b, --bash        Wait for bash"
   echo "  -s, --server      Start app server"

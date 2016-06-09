@@ -2,6 +2,7 @@
 
 ARG_CONTAINER="app"
 
+ARG_ARGUMENTS=
 while [[ $# > 0 ]]
 do
   key="$1"
@@ -13,6 +14,9 @@ do
       ARG_CONTAINER="$2"
       shift
     ;;
+    *)
+      ARG_ARGUMENTS="$ARG_ARGUMENTS $key"
+    ;;
   esac
   shift
 done
@@ -20,9 +24,9 @@ done
 if [[ -n "$ARG_HELP" ]]; then
   echo "Start an interactive console in the container"
   echo "Automatically starts the container if not running"
-  echo "  -c, --container   Specify the container"
+  echo "Usage:  $0 [-c CONTAINER] [bash ARGUMENTS]"
   exit 0
 fi
 
 .docker/start -s $ARG_CONTAINER -b -d 2>&1 | grep -v "up-to-date"
-docker-compose exec $ARG_CONTAINER /bin/bash
+docker-compose exec $ARG_CONTAINER /bin/bash $ARG_ARGUMENTS

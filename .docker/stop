@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+ARG_CONTAINER=
 while [[ $# > 0 ]]
 do
   key="$1"
@@ -7,9 +8,8 @@ do
     -h|--help)
       ARG_HELP=YES
     ;;
-    -c|--container)
-      ARG_CONTAINER="$2"
-      shift
+    *)
+      ARG_CONTAINER="$ARG_CONTAINER $key"
     ;;
   esac
   shift
@@ -17,7 +17,7 @@ done
 
 if [[ -n "$ARG_HELP" ]]; then
   echo "Stop the Docker containers"
-  echo "  -c, --container   Specify the container"
+  echo "Usage:  $0 [CONTAINER...]"
   exit 0
 fi
 
