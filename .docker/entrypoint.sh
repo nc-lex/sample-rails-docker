@@ -12,6 +12,7 @@ exitScript() { exit 0 ; }
 
 printPrompt() {
   echo "Run \"kill -$SIGSKIPBASH 1\" in bash to start the server"
+  echo "Run \"kill 1\" in bash to stop the container"
 }
 
 waitBash() {
