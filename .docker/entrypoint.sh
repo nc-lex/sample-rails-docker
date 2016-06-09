@@ -1,23 +1,21 @@
 #!/usr/bin/env bash
 
-SIGWAITBASH=31
+# SIGWAITBASH=31
 SIGSKIPBASH=30
 FOLDER_TEMP=tmp/docker
 
-trap "waitBash" $SIGWAITBASH
+# trap "waitBash" $SIGWAITBASH
 trap "startServer" $SIGSKIPBASH
+trap "exitScript" SIGTERM
 
-exitScript() {
-  exit 1
-}
+exitScript() { exit 0 ; }
 
 printPrompt() {
-  echo "Run \"kill 1\" in bash to start the server"
+  echo "Run \"kill -$SIGSKIPBASH 1\" in bash to start the server"
 }
 
 waitBash() {
-  trap "printPrompt" $SIGWAITBASH
-  trap "startServer" SIGTERM
+  # trap "printPrompt" $SIGWAITBASH
 
   echo "Waiting for bash..."
   printPrompt
@@ -26,8 +24,7 @@ waitBash() {
 }
 
 startServer() {
-  trap - $SIGWAITBASH $SIGSKIPBASH
-  trap "exitScript" SIGTERM
+  # trap - $SIGWAITBASH $SIGSKIPBASH
 
   # Initialize the database
   FILE_INIT=$FOLDER_TEMP/init
@@ -56,7 +53,6 @@ if [[ $# == 0 ]]; then
   if [ -f "$FILE_ARGUMENT" ]; then
     ARGS=$(<"$FILE_ARGUMENT")
 
-    echo $0 -a $ARGS
     exec $0 -a $ARGS
   else
     sleep 2 &
