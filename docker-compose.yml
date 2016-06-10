@@ -29,7 +29,7 @@ services:
 
     # Mount data directories of the database service to the app service for easier backup, etc
     # volumes_from:
-    #   - db      
+    #   - db
     #   - mongo
     #   - redis
 
@@ -62,7 +62,7 @@ services:
 
   #   volumes:
   #     - redis:/data
-      
+
 volumes:
   mysql: {}
   # mongo_db: {}

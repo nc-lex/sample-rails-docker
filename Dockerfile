@@ -30,11 +30,11 @@ WORKDIR $RAILS_ROOT
 
 # TODO #3
 # Install additional Linux packages
+RUN apt-get update -qq && apt-get install -y git                                # git
+RUN apt-get update -qq && apt-get install -y vim                                # vim
 # RUN apt-get update -qq && apt-get install -y libxslt-dev libxml2-dev            # nokogiri, < 1.6.4
 RUN apt-get update -qq && apt-get install -y mysql-client libmysqlclient-dev    # mysql2
 # RUN apt-get update -qq && apt-get install -y libpq-dev                          # pg
-RUN apt-get update -qq && apt-get install -y vim                                # vim
-RUN apt-get update -qq && apt-get install -y git                                # git
 
 # TODO #4
 # Tweak the system for some particular gem install errorså
@@ -46,10 +46,10 @@ RUN apt-get update -qq && apt-get install -y git                                
 # http://ilikestuffblog.com/2014/01/06/how-to-skip-bundle-install-when-deploying-a-rails-app-to-docker/
 COPY Gemfile Gemfile
 COPY Gemfile.lock Gemfile.lock
-# COPY vendor/cache vendor/cache
+COPY vendor/cache vendor/cache
 
 # Install additional Ruby gems
-RUN bundle install
+RUN bundle install --local
 
 # Set some aliases
 RUN echo "alias be='bundle exec'" >> ~/.bashrc
