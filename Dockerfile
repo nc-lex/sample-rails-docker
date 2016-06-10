@@ -51,6 +51,9 @@ COPY Gemfile.lock Gemfile.lock
 # Install additional Ruby gems
 RUN bundle install
 
+# Set some aliases
+RUN echo "alias be='bundle exec'" >> ~/.bashrc
+
 # Copy the Rails application into place
 COPY . .
 

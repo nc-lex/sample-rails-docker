@@ -1,40 +1,70 @@
-# Service configuration for our dockerized Rails app
-app:
+version: '2'
 
-  # Use the Dockerfile next to this file to build the Docker image
-  build: .
+services:
+  # Service configuration for our dockerized Rails app
+  app:
 
-  # Make the app container aware of the DB container
-  links:
-    - db:db
+    # Use the Dockerfile next to this file to build the Docker image
+    build: .
 
-  # Use the "exec" form of CMD so Nginx shuts down gracefully on SIGTERM (i.e. `docker stop`)
-  command: [ ".docker/entrypoint.sh" ]
+    # Make the app container aware of the DB container
+    links:
+      - db:db
+    #   - mongo:mongo
+    #   - redis:redis
 
-  # Source environment variable configuration for our app
-  env_file: .docker/.env
+    # Use the "exec" form of CMD so Nginx shuts down gracefully on SIGTERM (i.e. `docker stop`)
+    command: [ ".docker/entrypoint.sh" ]
 
-  # Expose the port we configured server to bind to
-  ports:
-    - "3001:3000"
+    # Source environment variable configuration for our app
+    env_file: .docker/.env
 
-  # Map our application source code, in full, to the application root of our container
-  volumes:
-    - .:/var/www/sample_app
+    # Expose the port we configured server to bind to
+    ports:
+      - "3001:3000"
 
-  # Mount data directories of the database service to the app service for easier backup, etc
-  volumes_from:
-    - db
+    # Map our application source code, in full, to the application root of our container
+    volumes:
+      - .:/var/www/sample_app
+
+    # Mount data directories of the database service to the app service for easier backup, etc
+    # volumes_from:
+    #   - db      
+    #   - mongo
+    #   - redis
 
 
-# Service configuration for our database
-db:
-  # Use the preferred version of the official MySQL image
-  image: mysql:5.7.12
+  # Service configuration for our database
+  db:
+    # Use the preferred version of the official MySQL image
+    image: mysql:5.7.12
 
-  # Source environment variable configuration for our app
-  env_file: .docker/.env
+    # Source environment variable configuration for our app
+    env_file: .docker/.env
 
-  # Persist the database between containers by storing it in a volume
-  volumes:
-    - sample_app_mysql:/var/lib/mysql
+    # Persist the database between containers by storing it in a volume
+    volumes:
+      - mysql:/var/lib/mysql
+
+  # mongo:
+  #   image: mongo:3.2.6
+
+  #   env_file: .docker/.env
+
+  #   volumes:
+  #     - mongo_db:/data/db
+  #     - mongo_configdb:/data/configdb
+
+  # redis:
+  #   image: redis:3.2.0
+
+  #   env_file: .docker/.env
+
+  #   volumes:
+  #     - redis:/data
+      
+volumes:
+  mysql: {}
+  # mongo_db: {}
+  # mongo_configdb: {}
+  # redis: {}

@@ -4,7 +4,12 @@
 # SIGSKIPBASH=30
 FOLDER_TEMP=tmp/docker
 
+ARG_HELP=
+ARG_DAEMON=
+ARG_ARGUMENTS=
+ARG_TIMEZONE=
 ARG_CONTAINER=
+
 while [[ $# > 0 ]]
 do
   key="$1"
@@ -16,10 +21,13 @@ do
       ARG_DAEMON="-d"
     ;;
     -b|--bash)
-      ARG_ARGUMENTS="-b"
+      ARG_ARGUMENTS="$ARG_ARGUMENTS -b"
     ;;
     -s|--server)
-      ARG_ARGUMENTS="-s"
+      ARG_ARGUMENTS="$ARG_ARGUMENTS -s"
+    ;;
+    -t|--timezone)
+      ARG_TIMEZONE=YES
     ;;
     *)
       ARG_CONTAINER="$ARG_CONTAINER $key"
@@ -34,6 +42,7 @@ if [[ -n "$ARG_HELP" ]]; then
   echo "  -d, --daemon      Start the container(s) in background"
   echo "  -b, --bash        Wait for bash"
   echo "  -s, --server      Start app server"
+  echo "  -t, --timezone    Sync time zone with host machine (sudo required)"
   exit 0
 fi
 
@@ -49,6 +58,11 @@ sendArgument() {
   FILE_ARGUMENT=$FOLDER_TEMP/args
   echo "$*" > "$FILE_ARGUMENT"
 }
+
+if [[ -n "$ARG_TIMEZONE" ]]; then
+  echo "Requesting root for getting current system timezone"
+  ARG_ARGUMENTS="$ARG_ARGUMENTS -t $(.docker/timezone.sh)"
+fi
 
 if [[ -n "$ARG_ARGUMENTS" ]]; then
   # sendSignal $SIGWAITBASH &

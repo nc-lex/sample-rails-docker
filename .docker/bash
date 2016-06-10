@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 
+ARG_HELP=
 ARG_CONTAINER="app"
-
+ARG_TIMEZONE=
 ARG_ARGUMENTS=
+
 while [[ $# > 0 ]]
 do
   key="$1"
@@ -14,6 +16,9 @@ do
       ARG_CONTAINER="$2"
       shift
     ;;
+    -t|--timezone)
+      ARG_TIMEZONE="-t"
+    ;;
     *)
       ARG_ARGUMENTS="$ARG_ARGUMENTS $key"
     ;;
@@ -24,9 +29,10 @@ done
 if [[ -n "$ARG_HELP" ]]; then
   echo "Start an interactive console in the container"
   echo "Automatically starts the container if not running"
-  echo "Usage:  $0 [-c CONTAINER] [bash ARGUMENTS]"
+  echo "Usage:  $0 [-c CONTAINER] [OPTIONS] [bash ARGUMENTS]"
+  echo "  -t, --timezone    Sync time zone with host machine (sudo required)"
   exit 0
 fi
 
-.docker/start -s $ARG_CONTAINER -b -d 2>&1 | grep -v "up-to-date"
+.docker/start -b -d $ARG_TIMEZONE $ARG_CONTAINER 2>&1 | grep -v "up-to-date"
 docker-compose exec $ARG_CONTAINER /bin/bash $ARG_ARGUMENTS

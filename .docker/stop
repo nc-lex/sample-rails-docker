@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
+ARG_HELP=
 ARG_CONTAINER=
+
 while [[ $# > 0 ]]
 do
   key="$1"

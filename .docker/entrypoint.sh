@@ -49,6 +49,13 @@ startServer() {
   exec bundle exec rails s -p 3000 -b 0.0.0.0
 }
 
+waitSignal() {
+  sleep 2 &
+  wait $!
+
+  startServer
+}
+
 if [[ $# == 0 ]]; then
   FILE_ARGUMENT=$FOLDER_TEMP/args
   if [ -f "$FILE_ARGUMENT" ]; then
@@ -56,13 +63,11 @@ if [[ $# == 0 ]]; then
 
     exec $0 -a $ARGS
   else
-    sleep 2 &
-    wait $!
-
-    startServer
+    waitSignal
   fi
 fi
 
+ARG_ACTION="waitSignal"
 while [[ $# > 0 ]]
 do
   key="$1"
@@ -70,11 +75,17 @@ do
     -a|--arguments)
     ;;
     -b|--bash)
-      waitBash
+      ARG_ACTION="waitBash"
     ;;
     -s|--server)
-      startServer
+      ARG_ACTION="startServer"
+    ;;
+    -t|--timezone)
+      .docker/timezone.sh $2
+      shift
     ;;
   esac
   shift
 done
+
+$ARG_ACTION
