@@ -5,31 +5,33 @@ ARG_CONTAINER="app"
 ARG_TIMEZONE=
 ARG_ARGUMENTS=
 
+IS_ARGUMENT=
 while [[ $# > 0 ]]
 do
   key="$1"
-  case $key in
-    -h|--help)
-      ARG_HELP=YES
-    ;;
-    -c|--container)
-      ARG_CONTAINER="$2"
-      shift
-    ;;
-    -t|--timezone)
-      ARG_TIMEZONE="-t"
-    ;;
-    *)
-      ARG_ARGUMENTS="$ARG_ARGUMENTS $key"
-    ;;
-  esac
+  if [[ -z "$IS_ARGUMENT" ]]; then
+    case $key in
+      -h|--help)
+        ARG_HELP=YES
+      ;;
+      -t|--timezone)
+        ARG_TIMEZONE="-t"
+      ;;
+      *)
+        ARG_CONTAINER="$key"
+        IS_ARGUMENT=YES
+      ;;
+    esac
+  else
+    ARG_ARGUMENTS="$ARG_ARGUMENTS $key"
+  fi
   shift
 done
 
 if [[ -n "$ARG_HELP" ]]; then
   echo "Start an interactive console in the container"
   echo "Automatically starts the container if not running"
-  echo "Usage:  $0 [-c CONTAINER] [OPTIONS] [bash ARGUMENTS]"
+  echo "Usage:  $0 [OPTIONS] [CONTAINER [ARGUMENTS]]"
   echo "  -t, --timezone    Sync time zone with host machine (sudo required)"
   exit 0
 fi
