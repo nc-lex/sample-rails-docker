@@ -164,9 +164,7 @@ This virtual machine can be accessed through <code>dinghy ssh</code>.
 
 * The Docker container time and the host machine time may get out of sync, causing delays between file changes and Rails server reloading.
 
-* Run <code>.docker/scripts/cleanup.sh</code> will delete any non-running containers, dangling images, and dangling volumes.
-
-  Run <code>docker-compose rm</code> to remove containers in current Docker Compose context (so that they will be recreated from images when started).
+* The Docker container may have a different timezone. Use <code>.docker/start -t</code> to sync the timezone. (sudo required)
 
 * The entrypoint script will automatically initialize the Rails database. Deleting <code>tmp/init</code> forces it to initialize again.
 
@@ -175,3 +173,8 @@ This virtual machine can be accessed through <code>dinghy ssh</code>.
 * <code>docker-compose build</code> can be run routinely to rebuild the Docker image and recreate the containers to clean them up.
 
   Note that during <code>docker-compose build</code> stage, changes to the context folder (such as updating <code>Gemfile.lock</code> and <code>vendor/cache</code>) will be made on the container file system, and thus will be hidden when the context folder from the host is mounted by Docker Compose. Therefore, run <code>bundle</code> directly in the container console first.
+
+* Run <code>.docker/scripts/cleanup.sh</code> will delete any non-running containers, dangling images, and dangling volumes.
+
+  Run <code>docker-compose rm</code> to remove containers in current Docker Compose context (so that they will be recreated from images when started).
+  
