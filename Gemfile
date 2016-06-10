@@ -14,8 +14,6 @@ gem 'sdoc',                 '0.4.1', group: :doc
 
 # gem 'pg',                   '0.18.4'
 gem 'mysql2',               '0.4.4'
-gem 'rails-perftest',       '0.0.6'
-gem 'ruby-prof',            '0.15.9'
 
 group :development do
   gem 'web-console',		    '3.2.0'

@@ -1,15 +1,9 @@
 require 'test_helper'
-require 'rails/performance_test_help'
-require 'benchmark'
 
-class BenchmarkTest < ActionDispatch::PerformanceTest
-  # Refer to the documentation for all available options
-  # self.profile_options = { runs: 5, metrics: [:wall_time, :memory],
-  #                          output: 'tmp/performance', formats: [:flat] }
-
+class BenchmarkTest < ActionDispatch::IntegrationTest
   test "basic" do
-    $readingTime = 20
-    $writingTime = 8
+    $readingTime = 5
+    $writingTime = 2
 
     $readingTime.times do
       get "/"
