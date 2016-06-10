@@ -160,21 +160,18 @@ Run <code>.docker/scripts/install-dinghy.sh</code> to install Dinghy, then run <
 
 This virtual machine can be accessed through <code>dinghy ssh</code>.
 
-== Tips
+== Tips and Troubleshooting
+
+* Any changes to <code>docker-compose.yml</code> may cause Docker Compose to delete and recreate the containers from images. Except for those to the host and named volumes, all changes (such as the newly installed gem libraries and binaries) will be lost. <code>docker-compose build</code> can be run routinely to rebuild the Docker image. It will thus also serve to "clean up" the containers.
+
+  Note that even though <code>docker-compose build</code> will run <code>bundle install</code>, during this stage, changes to the context folder (such as updating <code>Gemfile.lock</code> and <code>vendor/cache</code>) will be made on the image's own file system, and thus will be hidden when the context folder from the host is mounted by Docker Compose. Therefore, it should not be used to install new gems, etc.
 
 * The Docker container time and the host machine time may get out of sync, causing delays between file changes and Rails server reloading.
 
-* The Docker container may have a different timezone. Use <code>.docker/start -t</code> to sync the timezone. (sudo required)
+  The Docker container may also have a different timezone. Use <code>.docker/start -t</code> to sync the timezone. (root privileges on the host machine are required)
 
 * The entrypoint script will automatically initialize the Rails database. Deleting <code>tmp/init</code> forces it to initialize again.
 
+* Run <code>.docker/scripts/cleanup.sh</code> will delete any non-running containers, dangling images, and dangling volumes on the entire host machine. Use with care!
+
 * Do not set RAILS_ENV or MYSQL_HOST in <code>.docker/.env</code>.
-
-* <code>docker-compose build</code> can be run routinely to rebuild the Docker image and recreate the containers to clean them up.
-
-  Note that during <code>docker-compose build</code> stage, changes to the context folder (such as updating <code>Gemfile.lock</code> and <code>vendor/cache</code>) will be made on the container file system, and thus will be hidden when the context folder from the host is mounted by Docker Compose. Therefore, run <code>bundle</code> directly in the container console first.
-
-* Run <code>.docker/scripts/cleanup.sh</code> will delete any non-running containers, dangling images, and dangling volumes.
-
-  Run <code>docker-compose rm</code> to remove containers in current Docker Compose context (so that they will be recreated from images when started).
-  
