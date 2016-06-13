@@ -13,8 +13,10 @@ services:
     #   - mongo:mongo
     #   - redis:redis
 
+    # See .docker/entrypoint.sh
+    # Let the entrypoint read arguments from tmp/docker/args
     # Use the "exec" form of CMD so Nginx shuts down gracefully on SIGTERM (i.e. `docker stop`)
-    command: [ ".docker/entrypoint.sh" ]
+    command: [ "-a" ]
 
     # Source environment variable configuration for our app
     env_file:

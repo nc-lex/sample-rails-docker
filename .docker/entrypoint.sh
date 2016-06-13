@@ -1,10 +1,9 @@
 #!/usr/bin/env bash
 
-# SIGWAITBASH=31
 SIGSKIPBASH=30
 FOLDER_TEMP=tmp/docker
+FILE_ARGUMENT=$FOLDER_TEMP/args
 
-# trap "waitBash" $SIGWAITBASH
 trap "startServer" $SIGSKIPBASH
 trap "exitScript" SIGTERM
 
@@ -16,8 +15,6 @@ printPrompt() {
 }
 
 waitBash() {
-  # trap "printPrompt" $SIGWAITBASH
-
   echo "Waiting for bash..."
   printPrompt
 
@@ -25,8 +22,6 @@ waitBash() {
 }
 
 startServer() {
-  # trap - $SIGWAITBASH $SIGSKIPBASH
-
   # Initialize the database
   FILE_INIT=$FOLDER_TEMP/init
   if [ ! -f $FILE_INIT ]; then
@@ -56,16 +51,9 @@ waitSignal() {
   startServer
 }
 
-if [[ $# == 0 ]]; then
-  FILE_ARGUMENT=$FOLDER_TEMP/args
-  if [ -f "$FILE_ARGUMENT" ]; then
-    ARGS=$(<"$FILE_ARGUMENT")
-
-    exec $0 -a $ARGS
-  else
-    waitSignal
-  fi
-fi
+interactiveBash() {
+  exec /usr/bin/env bash
+}
 
 ARG_ACTION="waitSignal"
 while [[ $# > 0 ]]
@@ -73,9 +61,18 @@ do
   key="$1"
   case $key in
     -a|--arguments)
+      if [ -f "$FILE_ARGUMENT" ]; then
+        exec $0 $(<"$FILE_ARGUMENT")
+      fi
     ;;
     -b|--bash)
       ARG_ACTION="waitBash"
+    ;;
+    -h|--help)
+      ARG_HELP=YES
+    ;;
+    -i|--interactive)
+      ARG_ACTION="interactiveBash"
     ;;
     -s|--server)
       ARG_ACTION="startServer"
@@ -87,5 +84,16 @@ do
   esac
   shift
 done
+
+if [[ -n "$ARG_HELP" ]]; then
+  echo "Entrypoint for a Docker container"
+  echo "Usage:  $0 [OPTIONS]"
+  echo "  -a, --arguments            Read arguments from $FILE_ARGUMENT"
+  echo "  -b, --bash                 Wait for bash to connect"
+  echo "  -i, --interactive          Start a bash console"
+  echo "  -s, --server               Start app server"
+  echo "  -t, --timezone [TIMEZONE]  Set timezone"
+  exit 0
+fi
 
 $ARG_ACTION

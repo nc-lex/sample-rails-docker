@@ -35,7 +35,7 @@ RUN apt-get update -qq && apt-get install -y vim                                
 # RUN apt-get update -qq && apt-get install -y libxslt-dev libxml2-dev            # nokogiri, < 1.6.4
 RUN apt-get update -qq && apt-get install -y mysql-client libmysqlclient-dev    # mysql2
 # RUN apt-get update -qq && apt-get install -y libpq-dev                          # pg
-
+# RUN apt-get update -qq && apt-get install -y imagemagick                        # mini_magick
 # TODO #4
 # Tweak the system for some particular gem install errorså
 # RUN gem update debugger-ruby_core_source
@@ -57,5 +57,8 @@ RUN echo "alias be='bundle exec'" >> ~/.bashrc
 # Copy the Rails application into place
 COPY . .
 
-# Start an interactive shell
-CMD [ "/bin/bash" ]
+# Define an entrypoint for receiving arguments
+ENTRYPOINT [ ".docker/entrypoint.sh" ]
+
+# Start an interactive shell by passing arguments to the entrypoint
+CMD [ "-i" ]

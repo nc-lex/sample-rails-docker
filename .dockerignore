@@ -17,5 +17,6 @@ tmp
 .docker
 !.docker/Gemfile*
 !.docker/*.sh
+!.docker/**/*.sh
 docker-compose.yml
 Dockerfile
