@@ -30,7 +30,7 @@ startServer() {
   # Initialize the database
   FILE_INIT=$FOLDER_TEMP/init
   if [ ! -f $FILE_INIT ]; then
-    .docker/wait-for-it.sh -h $INFO_DATABASE_HOST -p $INFO_DATABASE_PORT -t 30
+    .docker/scripts/wait-for-it.sh -h $INFO_DATABASE_HOST -p $INFO_DATABASE_PORT -t 30
     if [ $? == "0" ]; then
       echo "Initializing Database..."
 
@@ -81,7 +81,7 @@ do
       ARG_ACTION="startServer"
     ;;
     -t|--timezone)
-      .docker/timezone.sh $2
+      .docker/scripts/timezone.sh $2
       shift
     ;;
   esac

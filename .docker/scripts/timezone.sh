@@ -27,8 +27,8 @@ SUDO="$(which sudo)"
 
 getTimeZone() {
   case "$OSTYPE" in
-    darwin*)  $SUDO systemsetup -gettimezone | awk 'BEGIN {FS=": "} { print $2 }' ;; 
-    linux*)   $SUDO echo "$(</etc/timezone)" ;;
+    darwin*)  ls -lah /etc/localtime | awk 'BEGIN {FS="zoneinfo/"} { print $2 }' ;; 
+    linux*)   echo "$(</etc/timezone)" ;;
     *)        echo "UTC" ;;
   esac
 }

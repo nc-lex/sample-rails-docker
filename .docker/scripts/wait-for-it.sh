@@ -25,9 +25,9 @@ USAGE
 wait_for()
 {
     if [[ $TIMEOUT -gt 0 ]]; then
-        echoerr "$cmdname: waiting $TIMEOUT seconds for $HOST:$PORT"
+        echoerr "Waiting $TIMEOUT seconds for $HOST:$PORT"
     else
-        echoerr "$cmdname: waiting for $HOST:$PORT without a timeout"
+        echoerr "Waiting for $HOST:$PORT without a timeout"
     fi
     start_ts=$(date +%s)
     while :
@@ -36,7 +36,7 @@ wait_for()
         result=$?
         if [[ $result -eq 0 ]]; then
             end_ts=$(date +%s)
-            echoerr "$cmdname: $HOST:$PORT is available after $((end_ts - start_ts)) seconds"
+            echoerr "$HOST:$PORT is available after $((end_ts - start_ts)) seconds"
             break
         fi
         sleep 1
