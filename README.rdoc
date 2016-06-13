@@ -31,7 +31,7 @@ Docker Machine::
 
 === Installation
 
-See https://docs.docker.com/engine/installation/mac/
+See https://docs.docker.com/engine/installation/mac
 
 === Dockerfile
 
@@ -47,7 +47,7 @@ The following are parts of <code>Dockerfile</code> that should be configured, ma
 
 1. <code>ENV RAILS_ROOT /var/www/sample_app</code> defines where the app will run in the Docker container.
 
-1. <code>RUN apt-get install -y mysql-client libmysqlclient-dev</code> installs non-RubyGems dependencies for <code>mysql2</code> gem. <code>pg</code> and older version of <code>nokogiri</code> required by rails also depend on non-RubyGems libraries.
+1. <code>RUN apt-get install -y mysql-client libmysqlclient-dev</code> installs native libraries for <code>mysql2</code> gem. Those RubyGems with native extensions may need this step. Tools for development can also be installed here.
 
 1. Sometimes <code>bundle install</code> may fail before some particular tweaks are made. These tweaks can be placed here.
 
