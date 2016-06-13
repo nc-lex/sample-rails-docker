@@ -17,7 +17,9 @@ services:
     command: [ ".docker/entrypoint.sh" ]
 
     # Source environment variable configuration for our app
-    env_file: .docker/.env
+    env_file:
+      - .docker/env/common.env
+      - .docker/env/app.env
 
     # Expose the port we configured server to bind to
     ports:
@@ -39,27 +41,40 @@ services:
     # Use the preferred version of the official MySQL image
     image: mysql:5.7.12
 
-    # Source environment variable configuration for our app
-    env_file: .docker/.env
+    # Source environment variable configuration for our database
+    env_file:
+      - .docker/env/common.env
+      - .docker/env/db.env
 
     # Persist the database between containers by storing it in a volume
     volumes:
       - mysql:/var/lib/mysql
 
   # mongo:
+  #   # Use the preferred version of the official Mongo image
   #   image: mongo:3.2.6
 
-  #   env_file: .docker/.env
+  #   # Source environment variable configuration for our database
+  #   env_file:
+  #     - .docker/env/common.env
 
+  #   # Persist the database between containers by storing it in a volume
   #   volumes:
   #     - mongo_db:/data/db
   #     - mongo_configdb:/data/configdb
 
   # redis:
+  #   # Use the preferred version of the official Redis image
   #   image: redis:3.2.0
+    
+  #   # Start with persistent storage
+  #   command: [ "redis-server", "--appendonly", "yes" ]
 
-  #   env_file: .docker/.env
+  #   # Source environment variable configuration for our database
+  #   env_file:
+  #     - .docker/env/common.env
 
+  #   # Persist the database between containers by storing it in a volume
   #   volumes:
   #     - redis:/data
 

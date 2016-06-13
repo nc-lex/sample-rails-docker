@@ -21,4 +21,4 @@ tmp
 .byebug_history
 
 # Ignore Docker environment variables.
-.docker/.env
+.docker/env/*.env
