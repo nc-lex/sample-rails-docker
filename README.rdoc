@@ -33,7 +33,7 @@ Docker Machine::
 
 See https://docs.docker.com/engine/installation/mac/
 
-=== Docker Engine
+=== Dockerfile
 
 <code>Dockerfile</code> defines how a single Docker image is built.
 
@@ -85,23 +85,15 @@ volumes::
 image::
   Directly use a Docker base image without a <code>Dockerfile</code> build.
   
-=== Database
-
-In <code>config/database.yml</code>, <code>host</code> should be set to <code>db</code> to connect to the database service defined in <code>docker-compose.yml</code>
-
-Alternatively, set <code>DATABASE_URL</code> in <code>.docker/.env</code> according to the following format.
-
-  DATABASE_URL=<adapter>://<username>:<password>@db/<database>?encoding=<encoding>&pool=<pool>
-  
 === Ignore
 
-<code>.dockerignore</code> defines files to be excluded when copied, etc in <code>Dockerfile</code>. Files won't be excluded when mounted.
+<code>.dockerignore</code> defines files to be excluded when copied in <code>Dockerfile</code>. Files won't be excluded when mounted.
 
-<code>.gitignore</code> should include <code>.docker/.env</code>.
+<code>.gitignore</code> should include <code>.docker/env/*.env</code>. See "Usage" section for more about <code>.docker/env/*.env</code>.
 
 == Usage
 
-* Make a <code>.docker/.env</code> file based on <code>.docker/.env.example</code>. This file should include all configurations for connections between Docker containers, such as MySQL, Mongo, and Redis setup. The value will be used in <code>config</code>, such as <code>config/database.yml</code>.
+* Make <code>.docker/env/*.env</code> files based on <code>.docker/env/*.env.example</code>. These files should include all configurations for connections between Docker containers, such as MySQL, Mongo, and Redis setup. The value will be used in the <code>config/*.yml</code> files.
 
 * Starts "Docker Quickstart Terminal" from Launchpad. After it completes startup it will display the current Docker host IP address. It will be referred to as <code><DockerHost></code> later, and can be found by running <code>docker-machine ip</code>.
 
@@ -118,7 +110,7 @@ Alternatively, set <code>DATABASE_URL</code> in <code>.docker/.env</code> accord
 
 === Development
 
-* Run <code>.docker/bash</code> to start a console in the app container for debugging, etc.
+* Run <code>.docker/bash</code> in another terminal tab to start a console in the app container for debugging, etc.
 
   Note that <code>.docker/bash -c db</code> connects to the database container. Check <code>.docker/bash -h</code> for details.
   
@@ -154,9 +146,9 @@ However, this creates some issues.
 
 ==== Dinghy
 
-Dinghy (https://github.com/codekitchen/dinghy) is a third-party tool to improve Docker on OS X. It creates its own Docker Machine using NFS, a faster file sharing system than the default VirtualBox file sharing.
+Dinghy (https://github.com/codekitchen/dinghy) is a third-party tool to improve Docker on OS X. It creates its own Docker Machine using NFS, a faster file system than the default VirtualBox file sharing.
 
-Dinghy addresses the first two issues. For example, through NFS file sharing <code>rake test</code> for this sample app takes around 1.4x time it takes on the host. (In comparison, through VirtualBox file shares it takes around 2.4x time) Dinghy will also forward <code>FSEvents</code> on OS X to the Docker Machine, triggering <code>inotify</code>, etc.
+Dinghy addresses the first two issues. The NFS file system allows a faster Rails loading. Dinghy will also forward <code>FSEvents</code> on OS X to the Docker Machine, triggering <code>inotify</code>, etc.
 
 Run <code>.docker/scripts/install-dinghy.sh</code> to install Dinghy, then run <code>dinghy up</code> to start Dinghy daemon if it's not running. Run <code>eval $(dinghy env)</code> (or use <code>~/.bash_profile</code>, etc) to set environment variables for Dinghy.
 
@@ -164,15 +156,15 @@ This virtual machine can be accessed through <code>dinghy ssh</code>.
 
 == Tips and Troubleshooting
 
-* Any changes to <code>docker-compose.yml</code> may cause Docker Compose to delete and recreate the containers from images. Except for those to the host and named volumes, all changes (such as the newly installed gem libraries and binaries) will be lost. <code>docker-compose build</code> can be run routinely to rebuild the Docker image. It will thus also serve to "clean up" the containers.
+* Any changes to <code>docker-compose.yml</code> may cause Docker Compose to delete and recreate the containers from images. Except for those to the host and named volumes, all changes (such as the newly installed gem libraries and binaries) will be lost. <code>docker-compose build</code> can be run routinely to rebuild the Docker image to include changes. It can also be used to "clean up" the containers.
 
-  Note that even though <code>docker-compose build</code> will run <code>bundle install</code>, during this stage, changes to the context folder (such as updating <code>Gemfile.lock</code> and <code>vendor/cache</code>) will be made on the image's own file system, and thus will be hidden when the context folder from the host is mounted by Docker Compose. Therefore, it should not be used to install new gems, etc.
+  Note that even though <code>docker-compose build</code> will run <code>bundle install</code>, during this stage, changes to the context folder (such as updating <code>Gemfile.lock</code> and <code>vendor/cache</code>) will be made on the image's file system, and thus will be hidden when the context folder from the host is mounted by Docker Compose. Therefore, it should not be used to install new gems, etc.
 
-* The Docker container time and the host machine time may get out of sync, causing delays between file changes and Rails server reloading.
+* The Docker Machine time and the host machine time may get out of sync, causing delays between file changes and Rails server reloading.
 
-  The Docker container may also have a different timezone. Use <code>.docker/start -t</code> to sync the timezone. (root privileges on the host machine are required)
+  Using <code>.docker/start</code> or <code>.docker/bash</code> will automatically update the container's timezone with the host machine's.
 
-* The entrypoint script will automatically initialize the Rails database. Deleting <code>tmp/init</code> forces it to initialize again.
+* The entrypoint script will automatically initialize the Rails database. Deleting <code>tmp/docker/init</code> forces it to initialize again.
 
 * Run <code>.docker/scripts/cleanup.sh</code> will delete any non-running containers, dangling images, and dangling volumes on the entire host machine. Use with care!
 
