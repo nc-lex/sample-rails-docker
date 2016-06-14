@@ -120,7 +120,7 @@ image::
 
 === Volume Mounting
 
-http://i.imgur.com/oUTQQh7.png
+http://i.imgur.com/Mp8noLt.png
 
 As shown in the graph above, Docker can mount host directories directly as container volumes. Normally it's used to mount the source folder to avoid <code>docker-compose build</code> after every code update on the host. Changes made by the container (such as an update to <code>vendor/cache</code> by <code>bundle package</code>) will also be stored by the host.
 
@@ -143,6 +143,8 @@ However, this creates some issues.
 * Run <code>docker volume inspect <Volume></code> to find the actual volume path. They can be directly accessed in the virtual machine through <code>docker-machine ssh</code>. 
   
 === Possible Solutions
+
+http://i.imgur.com/2SXLWxX.png
 
 ==== Dinghy
 
