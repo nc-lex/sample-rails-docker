@@ -18,6 +18,8 @@ COPY .docker/Gemfile.lock Gemfile.lock
 # Install essential Rails gems
 RUN bundle install
 
+
+
 # TODO #2
 # Define where our application will live inside the image
 ENV RAILS_ROOT /var/www/sample_app
@@ -51,14 +53,16 @@ COPY vendor/cache vendor/cache
 # Install additional Ruby gems
 RUN bundle install --local
 
-# Set some aliases
-RUN echo "alias be='bundle exec'" >> ~/.bashrc
 
-# Copy the Rails application into place
-COPY . .
+
+# Make the environment more development friendly
+RUN echo "alias be='bundle exec'" >> ~/.bashrc
 
 # Define an entrypoint for receiving arguments
 ENTRYPOINT [ ".docker/entrypoint.sh" ]
 
 # Start an interactive shell by passing arguments to the entrypoint
 CMD [ "-i" ]
+
+# Copy the Rails application into place
+COPY . .

@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# A Docker entrypoint for a development-friendly container
 
 SIGSKIPBASH=30
 FOLDER_TEMP=tmp/docker
