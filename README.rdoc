@@ -194,9 +194,9 @@ Dinghy::
 
   Note that even though <code>docker-compose build</code> will run <code>bundle install</code>, during this stage, changes to the context folder (such as updating <code>Gemfile.lock</code> and <code>vendor/cache</code>) will be made on the image's file system, and thus will be hidden when the context folder from the host is mounted by Docker Compose. Therefore, it should not be used to install new gems, etc.
 
-* The Docker Machine time and the host machine time may get out of sync, causing delays between file changes and Rails server reloading.
+* The Docker Machine time and the host machine time may get out of sync, causing delays between file changes and Rails server reloading. Use <code>docker-machine ssh default 'sudo ntpclient -s -h pool.ntp.org'</code> (or <code>dinghy ssh 'sudo ntpclient -s -h pool.ntp.org'</code> if using Dinghy) to update the Docker Machine time.
 
-  Using <code>.docker/start</code> or <code>.docker/bash</code> will automatically update the container's timezone with the host machine's.
+  Timezone can also be different between the host machine and the Docker containers. Using <code>.docker/start</code> or <code>.docker/bash</code> will automatically update the container's timezone with the host machine's.
 
 * The entrypoint script will automatically initialize the Rails database. Deleting <code>tmp/docker/init</code> forces it to initialize again.
 
