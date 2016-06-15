@@ -188,11 +188,13 @@ Dinghy::
 
 Command: <code>time bundle exec rake spec</code>
 
+The time in the rspec output is used to ignore the loading stage.
+
 OS X native::
-  42.44min
+  40.25min
 
 Dinghy::
-  47.60min
+  44.12min
 
 == Tips and Troubleshooting
 
