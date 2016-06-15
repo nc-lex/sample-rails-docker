@@ -170,7 +170,7 @@ After <code>Gemfile</code> is updated, <code>docker-compose build</code> can tak
 
 Benchmarks are run to evaluate the performance of Docker containers against native development.
 
-Setup: Apple OS X 10.11.4, Intel Core 2 Duo 3.06GHz, 16GB DDR3, HDD.
+Setup: Apple OS X 10.11.4, Intel Core 2 Duo 3.06GHz, 16GB DDR3, Mechanical HDD.
 
 === Appserver Framework Loading
 
