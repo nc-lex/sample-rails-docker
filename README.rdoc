@@ -39,17 +39,17 @@ See https://docs.docker.com/engine/installation/mac
 
 Docker caches for each line in <code>Dockerfile</code>, and will check modifications of files and use the corresponding cache to skip steps and speed up rebuilding. Therefore, lines that changes more often (such as <code>Gemfile</code>) should be put after lines that changes less often (such as <code>apt-get install build-essential</code>)
 
-In order to prevent the entire <code>Gemfile</code> to be <code>bundle install</code>ed when the Docker image is rebuilt, a seperate <code>Gemfile</code> is placed under <code>.docker</code> folder. This <code>Gemfile</code> should include essential gems and be relatively stable. In <code>Dockerfile</code>, it will be <code>bundle install</code>ed before the actual <code>Gemfile</code> and cached by Docker so that installing the actual <code>Gemfile</code> will be faster. Leave it blank if not desired.
-
 The following are parts of <code>Dockerfile</code> that should be configured, marked as <code>TODO</code>.
 
 1. <code>FROM ruby:2.2-slim</code> defines the base Docker image to be used. Ruby images can be found at https://hub.docker.com/_/ruby
 
-1. <code>ENV RAILS_ROOT /var/www/sample_app</code> defines where the app will run in the Docker container.
-
 1. <code>RUN apt-get install -y mysql-client libmysqlclient-dev</code> installs native libraries for <code>mysql2</code> gem. Those RubyGems with native extensions may need this step. Tools for development can also be installed here.
 
 1. Sometimes <code>bundle install</code> may fail before some particular tweaks are made. These tweaks can be placed here.
+
+1. <code>ENV RAILS_ROOT /var/www/sample_app</code> defines where the app will run in the Docker container.
+
+1. See "Issues" section for the <code>OPTIONAL</code> section.
 
 === Docker Compose
 
@@ -60,7 +60,7 @@ The following are the important labels in the file.
 build::
   Call <code>docker build</code> with the <code>Dockerfile</code> specified to build the image for the service container.
   
-links SERVICE:ALIAS::
+links::
   Allows connecting to another service by its service name, or an alias if specified.
 
 command::
@@ -70,7 +70,7 @@ command::
 env_file::
   The list of environment variables to be set. Sensitive strings such as database password can be place here.
   
-ports HOST:CONTAINER::
+ports::
   Expose ports of the container and provide mapping between ports of the Docker Engine (as in <code>dockerhost:*3000*</code>) and ports of the container (as in <code>rails s -p *3000*</code>).
   
   See "Usage" section for more about <code>dockerhost</code>.
@@ -85,11 +85,15 @@ volumes::
 image::
   Directly use a Docker base image without a <code>Dockerfile</code> build.
   
+=== Scripts
+
+<code>.docker</code> folder includes scripts for the container entrypoint as well as for starting containers, starting bash sessions, synchronizing timezone, etc. It also includes the environment variable files. See "Usage" section for more about <code>.docker/env/*.env</code>.
+  
 === Ignore
 
 <code>.dockerignore</code> defines files to be excluded when copied in <code>Dockerfile</code>. Files won't be excluded when mounted.
 
-<code>.gitignore</code> should include <code>.docker/env/*.env</code>. See "Usage" section for more about <code>.docker/env/*.env</code>.
+<code>.gitignore</code> should include <code>.docker/env/*.env</code>.
 
 == Usage
 
@@ -142,11 +146,9 @@ However, this creates some issues.
   
 * Run <code>docker volume inspect <Volume></code> to find the actual volume path. They can be directly accessed in the virtual machine through <code>docker-machine ssh</code>. 
   
-=== Possible Solutions
+==== Dinghy
 
 http://i.imgur.com/2SXLWxX.png
-
-==== Dinghy
 
 Dinghy (https://github.com/codekitchen/dinghy) is a third-party tool to improve Docker on OS X. It creates its own Docker Machine using NFS, a faster file system than the default VirtualBox file sharing.
 
@@ -155,6 +157,10 @@ Dinghy addresses the first two issues. The NFS file system allows a faster Rails
 Run <code>.docker/scripts/install-dinghy.sh</code> to install Dinghy, then run <code>dinghy up</code> to start Dinghy daemon if it's not running. Run <code>eval $(dinghy env)</code> (or use <code>~/.bash_profile</code>, etc) to set environment variables for Dinghy.
 
 This virtual machine can be accessed through <code>dinghy ssh</code>.
+
+=== Docker Build
+
+After <code>Gemfile</code> is updated, <code>docker-compose build</code> can take a long time to finish, since all gems will be reinstalled. This can be alleviated by making a separate <code>Gemfile</code> containing the essential and stable parts of the original <code>Gemfile</code>. Installing the minimal <code>Gemfile</code> before the complete one will force Docker to cache for it, so that stable gems will be skipped when reinstalling the complete one. However, note that it can cause multiple versions of the same gem being installed, leading to a "dirty" Docker image where <code>bundle exec</code> is always necessary.
 
 == Tips and Troubleshooting
 
