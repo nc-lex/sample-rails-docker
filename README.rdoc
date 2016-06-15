@@ -39,7 +39,7 @@ See https://docs.docker.com/engine/installation/mac
 
 Docker caches for each line in <code>Dockerfile</code>, and will check modifications of files and use the corresponding cache to skip steps and speed up rebuilding. Therefore, lines that changes more often (such as <code>Gemfile</code>) should be put after lines that changes less often (such as <code>apt-get install build-essential</code>)
 
-In order to prevent the entire <code>Gemfile</code> to be <code>bundle install</code>ed when the Docker image is rebuilt, a seperate <code>Gemfile</code> is placed under <code>.docker</code> folder. This <code>Gemfile</code> should include essential gems and be relatively stable. In <code>Dockerfile</code>, it will be <code>bundle install</code>ed before the actual <code>Gemfile</code> and cached by Docker so that installing the actual <code>Gemfile</code> will be faster. The  contents and versions in this minimal <code>Gemfile</code> won't affect the app, since the app still relies on the actual one.
+In order to prevent the entire <code>Gemfile</code> to be <code>bundle install</code>ed when the Docker image is rebuilt, a seperate <code>Gemfile</code> is placed under <code>.docker</code> folder. This <code>Gemfile</code> should include essential gems and be relatively stable. In <code>Dockerfile</code>, it will be <code>bundle install</code>ed before the actual <code>Gemfile</code> and cached by Docker so that installing the actual <code>Gemfile</code> will be faster. Leave it blank if not desired.
 
 The following are parts of <code>Dockerfile</code> that should be configured, marked as <code>TODO</code>.
 
