@@ -8,6 +8,7 @@ services:
     build: .
 
     # Make the app container aware of the DB container
+    # SERVICE:ALIAS
     links:
       - db:db
     #   - mongo:mongo
@@ -24,6 +25,7 @@ services:
       - .docker/env/app.env
 
     # Expose the port we configured server to bind to
+    # HOST:CONTAINER
     ports:
       - "3001:3000"
 

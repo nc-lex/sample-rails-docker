@@ -23,6 +23,8 @@ waitBash() {
 }
 
 startServer() {
+  trap - $SIGSKIPBASH
+
   # Initialize the database
   FILE_INIT=$FOLDER_TEMP/init
   if [ ! -f $FILE_INIT ]; then
@@ -45,18 +47,11 @@ startServer() {
   exec bundle exec rails s -p 3000 -b 0.0.0.0
 }
 
-waitSignal() {
-  sleep 2 &
-  wait $!
-
-  startServer
-}
-
 interactiveBash() {
   exec /usr/bin/env bash
 }
 
-ARG_ACTION="waitSignal"
+ARG_ACTION="startServer"
 while [[ $# > 0 ]]
 do
   key="$1"

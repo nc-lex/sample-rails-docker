@@ -16,6 +16,7 @@ tmp
 .dockerignore
 .docker
 !.docker/Gemfile*
+!.docker/**/Gemfile*
 !.docker/*.sh
 !.docker/**/*.sh
 docker-compose.yml
