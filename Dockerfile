@@ -38,6 +38,8 @@ RUN apt-get update -qq && apt-get install -y vim                                
 RUN apt-get update -qq && apt-get install -y mysql-client libmysqlclient-dev    # mysql2
 # RUN apt-get update -qq && apt-get install -y libpq-dev                          # pg
 # RUN apt-get update -qq && apt-get install -y imagemagick                        # mini_magick
+RUN gem install zeus                                                            # zeus
+
 # TODO #4
 # Tweak the system for some particular gem install errorså
 # RUN gem update debugger-ruby_core_source
@@ -57,6 +59,7 @@ RUN bundle install --local
 
 # Make the environment more development friendly
 RUN echo "alias be='bundle exec'" >> ~/.bashrc
+RUN echo "export TERM=xterm" >> ~/.bashrc
 
 # Define an entrypoint for receiving arguments
 ENTRYPOINT [ ".docker/entrypoint.sh" ]

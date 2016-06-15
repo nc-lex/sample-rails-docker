@@ -38,5 +38,8 @@ if [[ -n "$ARG_HELP" ]]; then
   exit 0
 fi
 
-.docker/start -b -d $ARG_KEEPTIMEZONE $ARG_CONTAINER 2>&1 | grep -v "up-to-date"
+CONTAINER_ID="$(docker-compose ps -q ${ARG_CONTAINER})"
+[[ -n "$CONTAINER_ID" ]] && [[ -n "$(docker ps -q -f=\"id=${CONTAINER_ID}\")" ]] || \
+  .docker/start -b -d $ARG_KEEPTIMEZONE $ARG_CONTAINER 2>&1 | grep -v "up-to-date"
+
 docker-compose exec $ARG_CONTAINER $BASH_PATH $ARG_ARGUMENTS
