@@ -160,6 +160,8 @@ This virtual machine can be accessed through <code>dinghy ssh</code>.
 
 === Docker Build
 
+(<code>OPTIONAL</code> section of <code>Dockerfile</code>)
+
 After <code>Gemfile</code> is updated, <code>docker-compose build</code> can take a long time to finish, since all gems will be reinstalled. This can be alleviated by making a separate <code>Gemfile</code> containing the essential and stable parts of the original <code>Gemfile</code>. Installing the minimal <code>Gemfile</code> before the complete one will force Docker to cache for it, so that stable gems will be skipped when reinstalling the complete one. However, note that it can cause multiple versions of the same gem being installed, leading to a "dirty" Docker image where <code>bundle exec</code> is always necessary.
 
 == Tips and Troubleshooting
