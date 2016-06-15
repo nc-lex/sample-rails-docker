@@ -164,6 +164,30 @@ This virtual machine can be accessed through <code>dinghy ssh</code>.
 
 After <code>Gemfile</code> is updated, <code>docker-compose build</code> can take a long time to finish, since all gems will be reinstalled. This can be alleviated by making a separate <code>Gemfile</code> containing the essential and stable parts of the original <code>Gemfile</code>. Installing the minimal <code>Gemfile</code> before the complete one will force Docker to cache for it, so that stable gems will be skipped when reinstalling the complete one. However, note that it can cause multiple versions of the same gem being installed, leading to a "dirty" Docker image where <code>bundle exec</code> is always necessary.
 
+== Performance
+
+Benchmarks are run to evaluate the performance of Docker containers against native development.
+
+=== Appserver Framework Loading
+
+Command: <code>time echo exit | rails console</code>
+
+OS X native::
+  38.57s
+
+Dinghy::
+  77.05s
+
+=== Appserver Test Suite
+
+Command: <code>time bundle exec rake spec</code>
+
+OS X native::
+  42.44min
+
+Dinghy::
+  47.60min
+
 == Tips and Troubleshooting
 
 * Any changes to <code>docker-compose.yml</code> may cause Docker Compose to delete and recreate the containers from images. Except for those to the host and named volumes, all changes (such as the newly installed gem libraries and binaries) will be lost. <code>docker-compose build</code> can be run routinely to rebuild the Docker image to include changes. It can also be used to "clean up" the containers.
