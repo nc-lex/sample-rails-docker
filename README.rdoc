@@ -172,13 +172,14 @@ Benchmarks are run to evaluate the performance of Docker containers against nati
 
 === Appserver Framework Loading
 
-Command: <code>time echo exit | rails console</code>
+Command: <code>time echo exit | bundle exec rails console</code>
+Average of three rounds after a warm-up round.
 
 OS X native::
-  38.57s
+  40.86s
 
 Dinghy::
-  77.05s
+  80.53s
 
 === Appserver Test Suite
 
