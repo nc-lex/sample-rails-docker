@@ -89,7 +89,7 @@ image::
 
 <code>.docker</code> folder includes scripts for the container entrypoint as well as for starting containers, starting bash sessions, synchronizing timezone, etc. It also includes the environment variable files. See "Usage" section for more about <code>.docker/env/*.env</code>.
 
-Note that <code>.docker/entrypoint.sh</code> will automatically attempt to initialize the database when starting the server. Change to the desired behavior if needed.
+Note that <code>.docker/entrypoint.sh</code> will automatically attempt to initialize the database when starting the server. It also defines how to start the server. Change to the desired behavior if needed.
   
 === Ignore
 
