@@ -27,7 +27,7 @@ services:
     # Expose the port we configured server to bind to
     # HOST:CONTAINER
     ports:
-      - "3001:3000"
+      - "3003:3000"
 
     # Map our application source code, in full, to the application root of our container
     volumes:

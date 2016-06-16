@@ -30,10 +30,7 @@ startServer() {
   if [ ! -f $FILE_INIT ]; then
     .docker/scripts/wait-for-it.sh -h $INFO_DATABASE_HOST -p $INFO_DATABASE_PORT -t 30
     if [ $? == "0" ]; then
-      echo "Initializing Database..."
-
-      bundle exec rake db:create
-      bundle exec rake db:schema:load
+      .docker/init.sh
 
       touch $FILE_INIT
     fi
@@ -42,9 +39,8 @@ startServer() {
   # Remove server pid file that may be left by an unexpected shutdown
   rm -f tmp/pids/server.pid
 
-  echo "Starting server..."
-  # Prefix `bundle` with `exec` so unicorn shuts down gracefully on SIGTERM (i.e. `docker stop`)
-  exec bundle exec rails s -p 3000 -b 0.0.0.0
+  # Prefix `bundle` with `exec` so the server shuts down gracefully on SIGTERM (i.e. `docker stop`)
+  exec .docker/server.sh
 }
 
 interactiveBash() {
