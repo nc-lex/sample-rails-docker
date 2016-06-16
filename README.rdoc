@@ -89,10 +89,10 @@ image::
   
 === Scripts
 
-<code>.docker</code> folder includes scripts for the container entrypoint as well as for starting containers, starting bash sessions, synchronizing timezone, etc. <code>.docker/init.sh</code> will be used to initialize the containers, and <code>.docker/server.sh</code> will be used to start the server. Change them according to the app setup.
+<code>.docker</code> folder includes scripts for the container entrypoint as well as for starting containers, starting bash sessions, synchronizing timezone, etc. <code>.docker/init.sh</code> will be used to initialize the containers, and <code>.docker/server.sh</code> will be used to start the server. Edit them according to the app setup.
 
 This folder also includes the environment variable files. See "Usage" section for more about <code>.docker/env/*.env</code>.
-  
+
 === Ignore
 
 <code>.dockerignore</code> defines files to be excluded when copied in <code>Dockerfile</code>. Files won't be excluded when mounted.
