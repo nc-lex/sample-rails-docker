@@ -28,12 +28,7 @@ startServer() {
   # Initialize the database
   FILE_INIT=$FOLDER_TEMP/init
   if [ ! -f $FILE_INIT ]; then
-    .docker/scripts/wait-for-it.sh -h $INFO_DATABASE_HOST -p $INFO_DATABASE_PORT -t 30
-    if [ $? == "0" ]; then
-      .docker/init.sh
-
-      touch $FILE_INIT
-    fi
+    .docker/init.sh && touch $FILE_INIT || exit
   fi
 
   # Remove server pid file that may be left by an unexpected shutdown
