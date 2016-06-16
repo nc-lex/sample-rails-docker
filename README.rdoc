@@ -208,6 +208,6 @@ Dinghy::
 
 * The entrypoint script will automatically initialize the Rails database. Deleting <code>tmp/docker/init</code> forces it to initialize again.
 
-* Run <code>.docker/scripts/cleanup.sh</code> will delete any non-running containers, dangling images, and dangling volumes on the entire host machine. Use with care!
+* Run <code>.docker/scripts/cleanup.sh</code> will delete any non-running containers, dangling images, and dangling volumes on the entire host machine. Use with caution!
 
 * Do not set RAILS_ENV or MYSQL_HOST in <code>.docker/.env</code>.
