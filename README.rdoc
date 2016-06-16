@@ -99,7 +99,7 @@ Note that <code>.docker/entrypoint.sh</code> will automatically attempt to initi
 
 == Usage
 
-* Make <code>.docker/env/*.env</code> files based on <code>.docker/env/*.env.example</code>. These files should include all configurations for connections between Docker containers, such as MySQL, Mongo, and Redis setup. The value will be used in the <code>config/*.yml</code> files.
+* Make <code>.docker/env/*.env</code> files based on <code>.docker/env/*.env.example</code>. These files should include all configurations for connections between Docker containers, such as MySQL, Mongo, and Redis setup. Setup <code>config/*.yml</code> files accordingly.
 
 * Starts "Docker Quickstart Terminal" from Launchpad. After it completes startup it will display the current Docker host IP address. It will be referred to as <code><DockerHost></code> later, and can be found by running <code>docker-machine ip</code>.
 
