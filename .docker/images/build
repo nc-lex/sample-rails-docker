@@ -6,6 +6,6 @@ IMAGE_NAME="${PROJECT_NAME}-base"
 IMAGE_VERSION="$(date +%Y%m%d)"
 
 mkdir -p .docker/images/base/vendor/cache
-cp -R vendor/cache/. .docker/images/base/vendor/cache/
+cp -p -R vendor/cache/. .docker/images/base/vendor/cache/
 docker build -t ${IMAGE_NAME}:${IMAGE_VERSION} -t ${IMAGE_NAME}:latest .docker/images/base || exit
 rm -rf .docker/images/base/vendor
