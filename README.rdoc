@@ -39,7 +39,11 @@ See https://docs.docker.com/engine/installation/mac
 
 Docker caches for each line in <code>Dockerfile</code>, and will check modifications of files and use the corresponding cache to skip steps and speed up rebuilding. Therefore, lines that changes more often (such as <code>Gemfile</code>) should be put after lines that changes less often (such as <code>apt-get install build-essential</code>)
 
-The following are parts of <code>Dockerfile</code> that should be configured, marked as <code>TODO</code>.
+In this app two Docker images are built, the minimal one for essential and stable packages, and the other for all packages required. As long as the minimal one is not updated, building the complete one will be much faster than building from scratch. (Though Docker caches, a full <code>bundle install</code> is required to rebuild in case <code>Gemfile</code> changes since it's only one line)
+
+The minimal <code>Dockerfile</code> is placed in <code>.docker/images/sample-app</code>.
+
+The following are parts of the minimal <code>Dockerfile</code> that should be configured, marked as <code>TODO</code>.
 
 1. <code>FROM ruby:2.2-slim</code> defines the base Docker image to be used. Ruby images can be found at https://hub.docker.com/_/ruby
 
@@ -49,7 +53,7 @@ The following are parts of <code>Dockerfile</code> that should be configured, ma
 
 1. <code>ENV RAILS_ROOT /var/www/sample_app</code> defines where the app will run in the Docker container.
 
-1. See "Issues" section for the <code>OPTIONAL</code> section.
+1. The essential and stable parts of the gems required by the app can be placed here.
 
 === Docker Compose
 
@@ -87,11 +91,17 @@ env_file::
 image::
   Directly use a Docker base image without a <code>Dockerfile</code> build.
   
-=== Scripts
+=== .docker Folder
 
-<code>.docker</code> folder includes scripts for the container entrypoint as well as for starting containers, starting bash sessions, synchronizing timezone, etc. <code>.docker/init.sh</code> will be used to initialize the containers, and <code>.docker/server.sh</code> will be used to start the server. Edit them according to the app setup.
+<code>.docker</code> folder includes scripts for the container entrypoint, starting containers, starting bash sessions, synchronizing timezone, etc.
 
-This folder also includes the environment variable files. See "Usage" section for more about <code>.docker/env/*.env</code>.
+The following are files that might need configurations.
+
+* <code>.docker/init.sh</code> will be used to initialize the containers, and <code>.docker/server.sh</code> will be used to start the server.
+
+* <code>.docker/images/build</code> will be used to build the base images.
+
+* <code>.docker/env/*.env</code> are the environment variable files. See "Usage" section for more about <code>.docker/env/*.env</code>.
 
 === Ignore
 
@@ -109,10 +119,10 @@ This folder also includes the environment variable files. See "Usage" section fo
 
 * Go to the app root directory, and run 
 
-    docker-compose build
-    docker-compose up
+    .docker/build -b
+    .docker/start -s app
     
-* Open <code><DockerHost>:3000</code> in browser to see the running app!
+* Open <code><DockerHost>:3003</code> in browser to see the running app!
 
   It might help to put <code><DockerHost> dockerhost</code> in the <code>hosts</code> file.
 
@@ -200,7 +210,7 @@ Dinghy::
 
 == Tips and Troubleshooting
 
-* Any changes to <code>docker-compose.yml</code> may cause Docker Compose to delete and recreate the containers from images. Except for those to the host and named volumes, all changes (such as the newly installed gem libraries and binaries) will be lost. <code>docker-compose build</code> can be run routinely to rebuild the Docker image to include changes. It can also be used to "clean up" the containers.
+* Any changes to <code>docker-compose.yml</code> may cause Docker Compose to delete and recreate the containers from images. Except for those to the host and named volumes, all changes (such as the newly installed gem libraries and binaries) will be lost. <code>.docker/build</code> (without <code>-b</code>) can be run routinely to rebuild the Docker image to include changes. It can also be used to "clean up" the containers.
 
   Note that even though <code>docker-compose build</code> will run <code>bundle install</code>, during this stage, changes to the context folder (such as updating <code>Gemfile.lock</code> and <code>vendor/cache</code>) will be made on the image's file system, and thus will be hidden when the context folder from the host is mounted by Docker Compose. Therefore, it should not be used to install new gems, etc.
 
