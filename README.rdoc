@@ -217,6 +217,8 @@ Dinghy::
 * The Docker Machine time and the host machine time may get out of sync, causing delays between file changes and Rails server reloading. Use <code>docker-machine ssh default 'sudo ntpclient -s -h pool.ntp.org'</code> (or <code>dinghy ssh 'sudo ntpclient -s -h pool.ntp.org'</code> if using Dinghy) to update the Docker Machine time.
 
   Timezone can also be different between the host machine and the Docker containers. Using <code>.docker/start</code> or <code>.docker/bash</code> will automatically update the container's timezone with the host machine's.
+  
+* Occasionally the shell session behave weirdly. Run <code>stty sane</code> on the OS X host machine may fix the problem.
 
 * The entrypoint script will automatically initialize the Rails database. Deleting <code>tmp/docker/init</code> forces it to initialize again.
 
