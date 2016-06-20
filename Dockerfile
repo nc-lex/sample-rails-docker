@@ -16,7 +16,7 @@ RUN bundle install --local --no-cache --no-prune
 
 # Make the environment more development friendly
 RUN echo "alias be='bundle exec'" >> ~/.bashrc
-RUN echo "export TERM=xterm" >> ~/.bashrc
+RUN echo "export TERM=xterm-256color" >> ~/.bashrc
 
 # Define an entrypoint for receiving arguments
 ENTRYPOINT [ ".docker/entrypoint.sh" ]
