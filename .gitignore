@@ -20,5 +20,8 @@ tmp
 # Ignore history files
 .byebug_history
 
+# IDE
+.idea
+
 # Ignore Docker environment variables.
 .docker/env/*.env
