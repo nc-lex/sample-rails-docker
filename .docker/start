@@ -7,6 +7,7 @@ FOLDER_TEMP=tmp/docker
 ARG_HELP=
 ARG_DAEMON=
 ARG_ARGUMENTS=
+ARG_KEEPCLOCK=
 ARG_KEEPTIMEZONE=
 ARG_CONTAINER=
 
@@ -26,8 +27,11 @@ do
     -s|--server)
       ARG_ARGUMENTS="$ARG_ARGUMENTS -s"
     ;;
-    -k|--keeptimezone)
-      ARG_KEEPTIMEZONE=YES
+    -c|--keepclock)
+      ARG_KEEPCLOCK="-c"
+    ;;
+    -t|--keeptimezone)
+      ARG_KEEPTIMEZONE="-k"
     ;;
     *)
       ARG_CONTAINER="$ARG_CONTAINER $key"
@@ -43,7 +47,8 @@ if [[ -n "$ARG_HELP" ]]; then
   echo "  -d, --daemon         Start the container(s) in background"
   echo "  -b, --bash           Wait for bash"
   echo "  -s, --server         Start app server"
-  echo "  -k, --keeptimezone   Don't update time zone"
+  echo "  -c, --keepclock      Don't update Docker container system clock"
+  echo "  -t, --keeptimezone   Don't update system timezone"
   exit 0
 fi
 
@@ -59,6 +64,10 @@ sendArgument() {
   FILE_ARGUMENT=$FOLDER_TEMP/args
   echo "$*" > "$FILE_ARGUMENT"
 }
+
+if [[ -z "$ARG_KEEPCLOCK" ]]; then
+  .docker/scripts/sync-time.sh > /dev/null
+fi
 
 if [[ -z "$ARG_KEEPTIMEZONE" ]]; then
   ARG_ARGUMENTS="$ARG_ARGUMENTS -t $(.docker/scripts/timezone.sh)"

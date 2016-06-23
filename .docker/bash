@@ -4,6 +4,7 @@ BASH_PATH="/usr/bin/env bash"
 
 ARG_HELP=
 ARG_CONTAINER="app"
+ARG_KEEPCLOCK=
 ARG_KEEPTIMEZONE=
 ARG_ARGUMENTS=
 
@@ -16,7 +17,10 @@ do
       -h|--help)
         ARG_HELP=YES
       ;;
-      -k|--keeptimezone)
+      -c|--keepclock)
+        ARG_KEEPCLOCK="-c"
+      ;;
+      -t|--keeptimezone)
         ARG_KEEPTIMEZONE="-k"
       ;;
       *)
@@ -34,12 +38,13 @@ if [[ -n "$ARG_HELP" ]]; then
   echo "Start an interactive console in the container"
   echo "Automatically starts the container and update timezone if not running"
   echo "Usage:  $0 [OPTIONS] [CONTAINER [ARGUMENTS]]"
-  echo "  -k, --keeptimezone   Don't update timezone"
+  echo "  -c, --keepclock      Don't update system clock"
+  echo "  -t, --keeptimezone   Don't update system timezone"
   exit 0
 fi
 
 CONTAINER_ID="$(docker-compose ps -q ${ARG_CONTAINER})"
 [[ -n "$CONTAINER_ID" ]] && [[ -n "$(docker ps -q -f=\"id=${CONTAINER_ID}\")" ]] || \
-  .docker/start -b -d $ARG_KEEPTIMEZONE $ARG_CONTAINER 2>&1 | grep -v "up-to-date"
+  .docker/start -b -d $ARG_KEEPCLOCK $ARG_KEEPTIMEZONE $ARG_CONTAINER 2>&1 | grep -v "up-to-date"
 
 docker-compose exec $ARG_CONTAINER $BASH_PATH $ARG_ARGUMENTS
