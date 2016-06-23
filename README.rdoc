@@ -26,12 +26,41 @@ Docker Compose::
   
 Docker Machine::
   A virtual machine tool to create a Linux environment for Docker to run on Windows and OS X.
+  
+== Installation
 
-== Configuration
+0. Follow Step 1 from https://docs.docker.com/docker-for-mac/ to install Docker.
 
-=== Installation
+0. Run <code>docker-machine stop</code> to stop Docker Machine if it's running. Disable 
 
-See https://docs.docker.com/engine/installation/mac
+// TODO
+
+== Usage
+
+* Make <code>.docker/env/*.env</code> files based on <code>.docker/env/*.env.example</code>. These files should include all configurations for connections between Docker containers, such as MySQL, Mongo, and Redis setup. Setup <code>config/*.yml</code> files accordingly.
+
+* Starts "Docker Quickstart Terminal" from Launchpad. After it completes startup it will display the current Docker host IP address. It will be referred to as <code><DockerHost></code> later, and can be found by running <code>docker-machine ip</code>.
+
+  Alternatively, after running <code>docker-machine start</code>, a terminal with <code>eval "$(docker-machine env)"</code> (in <code>~/.bash_profile</code>, etc) run will also work.
+
+* Go to the app root directory, and run 
+
+    .docker/build -b
+    .docker/start -s app
+    
+* Open <code><DockerHost>:3003</code> in browser to see the running app!
+
+  It might help to put <code><DockerHost> dockerhost</code> in the <code>hosts</code> file.
+
+=== Development
+
+* Run <code>.docker/bash</code> in another terminal tab to start a console in the app container for debugging, etc.
+
+  Note that <code>.docker/bash -c db</code> connects to the database container. Check <code>.docker/bash -h</code> for details.
+  
+* <code>docker-compose up</code> will automatically starts the default app (Rails server in this project). Run <code>.docker/start -b</code> or <code>.docker/bash</code> when the container is stopped to prevent the default app from starting (e.g. when installing new gems). Check <code>.docker/start -h</code> for details.
+
+== Dockerizing An Existing App
 
 === Dockerfile
 
@@ -108,31 +137,6 @@ The following are files that might need configurations.
 <code>.dockerignore</code> defines files to be excluded when copied in <code>Dockerfile</code>. Files won't be excluded when mounted.
 
 <code>.gitignore</code> should include <code>.docker/env/*.env</code>.
-
-== Usage
-
-* Make <code>.docker/env/*.env</code> files based on <code>.docker/env/*.env.example</code>. These files should include all configurations for connections between Docker containers, such as MySQL, Mongo, and Redis setup. Setup <code>config/*.yml</code> files accordingly.
-
-* Starts "Docker Quickstart Terminal" from Launchpad. After it completes startup it will display the current Docker host IP address. It will be referred to as <code><DockerHost></code> later, and can be found by running <code>docker-machine ip</code>.
-
-  Alternatively, after running <code>docker-machine start</code>, a terminal with <code>eval "$(docker-machine env)"</code> (in <code>~/.bash_profile</code>, etc) run will also work.
-
-* Go to the app root directory, and run 
-
-    .docker/build -b
-    .docker/start -s app
-    
-* Open <code><DockerHost>:3003</code> in browser to see the running app!
-
-  It might help to put <code><DockerHost> dockerhost</code> in the <code>hosts</code> file.
-
-=== Development
-
-* Run <code>.docker/bash</code> in another terminal tab to start a console in the app container for debugging, etc.
-
-  Note that <code>.docker/bash -c db</code> connects to the database container. Check <code>.docker/bash -h</code> for details.
-  
-* <code>docker-compose up</code> will automatically starts the default app (Rails server in this project). Run <code>.docker/start -b</code> or <code>.docker/bash</code> when the container is stopped to prevent the default app from starting (e.g. when installing new gems). Check <code>.docker/start -h</code> for details.
 
 == Issues
 
