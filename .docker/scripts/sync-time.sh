@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-MACHINE_NAME="dinghy"
+MACHINE_NAME="$DOCKER_MACHINE_NAME"
 while [[ $# > 0 ]]
 do
   key="$1"
