@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+# Install VirtualBox
+brew cask install virtualbox
+
+# Install Docker
+brew install docker
+brew install docker-compose
+brew install docker-machine
+
+# Install Dinghy, a custom virtual machine for Docker to run on Mac OS X
+brew tap codekitchen/dinghy
+brew install dinghy
+
+# Start dinghy virtual machine
+dinghy create --provider virtualbox
+dinghy up
+
+echo "Run \"eval \$(dinghy env)\" to set environment variables to connect to Docker"
