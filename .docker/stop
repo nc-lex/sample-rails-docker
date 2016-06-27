@@ -30,6 +30,4 @@ fi
 
 docker-compose stop $ARG_CONTAINER
 
-if [[ -n "$ARG_REMOVE" ]]; then
-  docker-compose rm -a -f $ARG_CONTAINER
-fi
+[[ -n "$ARG_REMOVE" ]] && docker-compose rm -a -f $ARG_CONTAINER

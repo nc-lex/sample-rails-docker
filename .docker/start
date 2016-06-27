@@ -52,12 +52,12 @@ if [[ -n "$ARG_HELP" ]]; then
   exit 0
 fi
 
-sendSignal() {
-  while [[ -z "$OUTPUT_KILL" ]]; do
-    OUTPUT_KILL="$(docker-compose kill -s $1 $ARG_CONTAINER 2>&1)"
-    sleep 1
-  done
-}
+#sendSignal() {
+#  while [[ -z "$OUTPUT_KILL" ]]; do
+#    OUTPUT_KILL="$(docker-compose kill -s $1 $ARG_CONTAINER 2>&1)"
+#    sleep 1
+#  done
+#}
 
 sendArgument() {
   mkdir -p "$FOLDER_TEMP"
@@ -65,13 +65,8 @@ sendArgument() {
   echo "$*" > "$FILE_ARGUMENT"
 }
 
-if [[ -z "$ARG_KEEPCLOCK" ]]; then
-  .docker/scripts/sync-time.sh > /dev/null
-fi
-
-if [[ -z "$ARG_KEEPTIMEZONE" ]]; then
-  ARG_ARGUMENTS="$ARG_ARGUMENTS -t $(.docker/scripts/timezone.sh)"
-fi
+[[ -z "$ARG_KEEPCLOCK" ]] && .docker/scripts/sync-time.sh > /dev/null
+[[ -z "$ARG_KEEPTIMEZONE" ]] && ARG_ARGUMENTS="$ARG_ARGUMENTS -t $(.docker/scripts/timezone.sh)"
 
 if [[ -n "$ARG_ARGUMENTS" ]]; then
   # sendSignal $SIGWAITBASH &
