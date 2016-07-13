@@ -1,0 +1,2 @@
+class Erin < Exception
+end
