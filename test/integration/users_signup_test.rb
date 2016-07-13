@@ -9,6 +9,7 @@ class UsersSignupTest < ActionDispatch::IntegrationTest
                                password:              "foo",
                                password_confirmation: "bar" }
     end
+    File.write('tmp/tests/invalid_signup_information.html', response.body)
     assert_template 'users/new'
   end
 
@@ -20,6 +21,7 @@ class UsersSignupTest < ActionDispatch::IntegrationTest
                                             password:              "password",
                                             password_confirmation: "password" }
     end
+    File.write('tmp/tests/valid_signup_information.html', response.body)
     assert_template 'users/show'
   end
 end
