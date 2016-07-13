@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+PROJECT_NAME="sampleapp"
+
+ARG_HELP=
+while [[ $# > 0 ]] ; do
+  case $1 in
+    -h|--help)
+      ARG_HELP=YES
+    ;;
+  esac
+  shift
+done
+
+if [[ -n "${ARG_HELP}" ]]; then
+  echo "Fetch the shared Docker files"
+  exit 0
+fi
+
+shared_path=${SHARED_PATH}
+[[ -z "${shared_path}" ]] && shared_path="../docker-shared"
+[[ ! -f "${shared_path}/clone" ]] && echo "Docker shared folder is not found. Please specify it with \$SHARED_PATH." && exit 1
+
+${shared_path}/clone -n "${PROJECT_NAME}" && echo "Successfully fetched Docker files for Project ${PROJECT_NAME}"
