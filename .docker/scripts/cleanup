@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+
+[[ $# == 0 ]] && exec $0 -h
+
+ARG_HELP=
+ARG_CONTAINERS=
+ARG_IMAGES=
+ARG_VOLUMES=
+
+while [[ $# > 0 ]] ; do
+  case $1 in
+    -h|--help)
+      ARG_HELP=YES
+    ;;
+    -a|--all)
+      exec $0 -c -i -v
+    ;;
+    -c|--containers)
+      ARG_CONTAINERS=YES
+    ;;
+    -i|--images)
+      ARG_IMAGES=YES
+    ;;
+    -v|--volumes)
+      ARG_VOLUMES=YES
+    ;;
+  esac
+  shift
+done
+
+if [[ -n "${ARG_HELP}" ]]; then
+  echo "Clean up Docker files on the entire machine"
+  echo "Usage:  $0 [OPTIONS]"
+  echo "  -c, --containers  Remove exited containers"
+  echo "  -i, --images      Remove dangling images"
+  echo "  -v, --volumes     Remove dangling volumes"
+  echo "  -a, --all         Remove all above"
+  exit 0
+fi
+
+# Cleans up unnecessary Docker images and containers
+
+# Make sure that exited containers are deleted.
+[[ -n "${ARG_CONTAINERS}" ]] && docker rm -v $(docker ps -a -q -f status=exited)
+
+# Remove unwanted ‘dangling’ images.
+[[ -n "${ARG_IMAGES}" ]] && docker rmi $(docker images -f "dangling=true" -q)
+
+# Remove unwanted ‘dangling’ volumes.
+[[ -n "${ARG_VOLUMES}" ]] && docker volume rm $(docker volume ls -qf dangling=true)

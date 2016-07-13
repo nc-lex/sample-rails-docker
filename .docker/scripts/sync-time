@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+ARG_HELP=
+ARG_MACHINE_NAME="$DOCKER_MACHINE_NAME"
+
+while [[ $# > 0 ]] ; do
+  case $1 in
+    -h|--help)
+      ARG_HELP=YES
+    ;;
+    *)
+      ARG_MACHINE_NAME="$2"
+      shift
+    ;;
+  esac
+  shift
+done
+
+if [[ -n "${ARG_HELP}" ]]; then
+  echo "Force a Docker Machine to sync time with NTP server"
+  echo "Usage:  $0 [Docker Machine Name]"
+  exit 0
+fi
+
+docker-machine ssh ${ARG_MACHINE_NAME} 'sudo ntpclient -s -h pool.ntp.org'

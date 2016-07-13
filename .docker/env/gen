@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+shopt -s nullglob
+
+for ENV_FILE in .docker/env/*.env.example ; do
+  cp -p -n $ENV_FILE ${ENV_FILE%.*}
+done
+
+for CONFIG_FILE in config/*.yml.example ; do
+  cp -p -n $CONFIG_FILE ${CONFIG_FILE%.*}
+done

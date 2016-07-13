@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+ARG_HELP=
+ARG_REMOVE=
+ARG_CONTAINER=
+
+while [[ $# > 0 ]] ; do
+  case $1 in
+    -h|--help)
+      ARG_HELP=YES
+    ;;
+    -r|--remove)
+      ARG_REMOVE=YES
+    ;;
+    *)
+      ARG_CONTAINER="${ARG_CONTAINER} $1"
+    ;;
+  esac
+  shift
+done
+
+if [[ -n "${ARG_HELP}" ]]; then
+  echo "Stop the Docker containers"
+  echo "Usage:  $0 [CONTAINER...]"
+  echo "  -r, --remove         Remove the container(s) after stopped"
+  exit 0
+fi
+
+docker-compose stop ${ARG_CONTAINER}
+
+[[ -n "${ARG_REMOVE}" ]] && docker-compose rm -a -f ${ARG_CONTAINER}

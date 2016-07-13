@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+BUILD_BASE_PATH=".docker/images/build"
+
+ARG_HELP=
+ARG_BASE=
+ARG_CONTAINER=
+
+while [[ $# > 0 ]] ; do
+  case $1 in
+    -h|--help)
+      ARG_HELP=YES
+    ;;
+    -b|--base)
+      ARG_BASE=YES
+    ;;
+    *)
+      ARG_CONTAINER="${ARG_CONTAINER} $1"
+    ;;
+  esac
+  shift
+done
+
+if [[ -n "${ARG_HELP}" ]]; then
+  echo "Build a docker image"
+  echo "Usage:  $0 [OPTIONS]"
+  echo "  -b, --base           Also invoke ${BUILD_BASE_PATH} to build base images"
+  exit 0
+fi
+
+if [[ -n "${ARG_BASE}" ]]; then
+  ${BUILD_BASE_PATH} || exit
+fi
+
+docker-compose build ${ARG_CONTAINER}

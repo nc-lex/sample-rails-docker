@@ -1,0 +1,89 @@
+version: '2'
+
+services:
+  # Service configuration for our dockerized Rails app
+  app:
+
+    # Use the Dockerfile next to this file to build the Docker image
+    build: .
+
+    # Make the app container aware of the DB container
+    # SERVICE:ALIAS
+    links:
+      - db:db
+    #   - mongo:mongo
+    #   - redis:redis
+
+    # See .docker/entrypoint.sh
+    # Let the entrypoint read arguments from tmp/docker/args
+    # Use the "exec" form of CMD so Nginx shuts down gracefully on SIGTERM (i.e. `docker stop`)
+    command: [ "-a" ]
+
+    # Source environment variable configuration for our app
+    env_file:
+      - .docker/env/common.env
+      - .docker/env/app.env
+
+    # Expose the port we configured server to bind to
+    # HOST:CONTAINER
+    ports:
+      - "3003:3000"
+
+    # Map our application source code, in full, to the application root of our container
+    volumes:
+      - .:/root/code/sample_app
+
+    # Mount data directories of the database service to the app service for easier backup, etc
+    # volumes_from:
+    #   - db
+    #   - mongo
+    #   - redis
+
+
+  # Service configuration for our database
+  db:
+    # Use the preferred version of the official MySQL image
+    image: mysql:5.7.12
+
+    # Source environment variable configuration for our database
+    env_file:
+      - .docker/env/common.env
+      - .docker/env/db.env
+
+    # Persist the database between containers by storing it in a volume
+    volumes:
+      - mysql:/var/lib/mysql
+
+  # mongo:
+  #   # Use the preferred version of the official Mongo image
+  #   image: mongo:3.2.6
+
+  #   # Source environment variable configuration for our database
+  #   env_file:
+  #     - .docker/env/common.env
+
+  #   # Persist the database between containers by storing it in a volume
+  #   volumes:
+  #     - mongo_db:/data/db
+  #     - mongo_configdb:/data/configdb
+
+  # redis:
+  #   # Use the preferred version of the official Redis image
+  #   image: redis:3.2.0
+    
+  #   # Start with persistent storage
+  #   command: [ "redis-server", "--appendonly", "yes" ]
+
+  #   # Source environment variable configuration for our database
+  #   env_file:
+  #     - .docker/env/common.env
+
+  #   # Persist the database between containers by storing it in a volume
+  #   volumes:
+  #     - redis:/data
+
+volumes:
+  mysql: {}
+  # mongo_db: {}
+  # mongo_configdb: {}
+  # redis: {}

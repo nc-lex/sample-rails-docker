@@ -1,0 +1,77 @@
+#!/usr/bin/env bash
+
+# SIGWAITBASH=31
+# SIGSKIPBASH=30
+FOLDER_TEMP=tmp/docker
+
+ARG_HELP=
+ARG_DAEMON=
+ARG_ARGUMENTS=
+ARG_KEEPCLOCK=
+ARG_KEEPTIMEZONE=
+ARG_CONTAINER=
+
+while [[ $# > 0 ]] ; do
+  case $1 in
+    -h|--help)
+      ARG_HELP=YES
+    ;;
+    -d|--daemon)
+      ARG_DAEMON="-d"
+    ;;
+    -b|--bash)
+      ARG_ARGUMENTS="${ARG_ARGUMENTS} -b"
+    ;;
+    -s|--server)
+      ARG_ARGUMENTS="${ARG_ARGUMENTS} -s"
+    ;;
+    -c|--keepclock)
+      ARG_KEEPCLOCK="-c"
+    ;;
+    -t|--keeptimezone)
+      ARG_KEEPTIMEZONE="-k"
+    ;;
+    *)
+      ARG_CONTAINER="${ARG_CONTAINER} $1"
+    ;;
+  esac
+  shift
+done
+
+if [[ -n "${ARG_HELP}" ]]; then
+  echo "Start a Docker container and its depencencies"
+  echo "Automatically update timezone according to the host machine"
+  echo "Usage:  $0 [OPTIONS] [CONTAINER...]"
+  echo "  -d, --daemon         Start the container(s) in background"
+  echo "  -s, --server         Run the default server on startup"
+  echo "  -c, --keepclock      Don't update Docker container system clock"
+  echo "  -t, --keeptimezone   Don't update system timezone"
+  exit 0
+fi
+
+#sendSignal() {
+#  while [[ -z "$OUTPUT_KILL" ]]; do
+#    OUTPUT_KILL="$(docker-compose kill -s $1 $ARG_CONTAINER 2>&1)"
+#    sleep 1
+#  done
+#}
+
+sendArgument() {
+  mkdir -p "${FOLDER_TEMP}"
+  FILE_ARGUMENT=${FOLDER_TEMP}/args
+  echo "$*" > "${FILE_ARGUMENT}"
+}
+
+[[ -z "${ARG_KEEPCLOCK}" ]] && .docker/scripts/sync-time > /dev/null
+[[ -z "${ARG_KEEPTIMEZONE}" ]] && ARG_ARGUMENTS="${ARG_ARGUMENTS} -t $(.docker/scripts/timezone.sh)"
+
+if [[ -n "${ARG_ARGUMENTS}" ]]; then
+  # sendSignal $SIGWAITBASH &
+  # sendSignal $SIGSKIPBASH &
+  sendArgument ${ARG_ARGUMENTS}
+fi
+
+docker-compose up ${ARG_DAEMON} ${ARG_CONTAINER}
+
+# trap "kill $!" SIGINT
+# wait $!
