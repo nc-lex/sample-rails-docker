@@ -1,4 +1,4 @@
-= Sample Rails app on Docker
+= Docker Environment
 
 == Introduction to Docker
 
@@ -8,56 +8,68 @@ Docker is a Linux container and virtualization tool. It's more lightweight than 
 
 http://i.imgur.com/6xHD7Kl.png
 
-OS X doesn't have the required Linux kernel. Therefore, when running on OS X, Docker runs on a Linux virtual machine (created by Docker Machine).
+Docker can only run on Linux kernels. Therefore, when running on OS X, Docker runs on a minimal Linux virtual machine (created by Docker Machine).
 
 === Vocabulary
 
 container::
-  A Docker instance that emulates a computer.
-  
+  A Docker virtualization instance.
+
 image::
   The "base class" of containers. Defines how a container is created. <code>debian</code>, <code>ubuntu</code>, <code>ruby</code>, and <code>mysql</code> are among the popular images. They are built from steps defined in a <code>Dockerfile</code>.
-  
+
 Docker Engine::
   Builds and manages Docker images. Runs and manages Docker containers.
-  
+
 Docker Compose::
   Organize multiple Docker containers. Many of its commands resemble the ones of Docker Engine.
-  
+
 Docker Machine::
   A virtual machine tool to create a Linux environment for Docker to run on Windows and OS X.
-  
+
 Dinghy::
   A third-party tool to improve Docker on OS X. It creates its own Docker Machine using NFS, a faster file system than the default VirtualBox file sharing. It also forwards <code>FSEvents</code> on OS X to the Docker Machine.
-  
+
   See "Dinghy" section under "Issues" for details about Dinghy.
-  
+
 == Installation
 
-0. Run <code>.docker/scripts/install</code> to install Docker.
+0. Clone this repository to <code>~/code/docker-shared</code>. Run <code>.docker/scripts/install</code> to install Docker.
 
-0. Run <code>eval $(dinghy env)</code> (or in <code>~/.bash_profile</code>, etc) to set environment variables for the current terminal to connect to Docker. An IP address (e.g. <code>192.168.99.100</code>) is included in the variables, which can also be fetched by <code>dinghy ip</code>. It will be referred to as <code><DockerHost></code> in the "Usage" section.
+0. Run <code>dinghy up</code> on (OS X) host machine startup (using Automator, etc.) to start Dinghy virtual machine.
+
+0. Run <code>eval $(dinghy env)</code> (in <code>~/.bash_profile</code>, etc.) to set environment variables for the current terminal to connect to Docker.
 
 == Usage
 
-* Make <code>.docker/env/*.env</code> files based on <code>.docker/env/*.env.example</code>. These files should include all configurations for connections between Docker containers, such as MySQL, Mongo, and Redis setup. Config <code>config/*.yml</code> files according to the env files.
+* Enter a project folder in terminal. Run <code>.docker/config/fetch</code> to fetch files from this repository.
+
+* Run <code>.docker/env/gen</code> to generate <code>.docker/env/*.env</code> files based on <code>.docker/env/*.env.example</code>. These files should include all configurations for connections between Docker containers, such as MySQL, Mongo, and Redis setup.
+
+  Config <code>config/*.yml</code> according to the env files. Examples files for them are also provided.
 
 * Go to the app root directory, and run
 
     .docker/build -b
     .docker/start -s app
-    
-* Open <code><DockerHost>:3003</code> in browser to see the running app!
 
-  It might help to put <code><DockerHost> dockerhost</code> in the <code>hosts</code> file.
+* The app can now be accessed by <code><anything>.docker:<port></code>!
 
 === Development
 
 * Run <code>.docker/bash</code> in another terminal tab to start a console in the app container for debugging, etc.
 
-  Note that <code>.docker/bash -c db</code> connects to the database container. Check <code>.docker/bash -h</code> for details.
-  
-* <code>.docker/start</code> will automatically starts the default app (Rails server in this project). Run <code>.docker/start -b</code> or <code>.docker/bash</code> when the container is stopped to prevent the default app from starting. Check <code>.docker/start -h</code> for details.
+  Note that <code>.docker/bash db</code> connects to the database container. Check <code>.docker/bash -h</code> for details.
+
+* <code>.docker/start</code> will just start the container, while <code>.docker/start -s</code> will also initialize (using <code>.docker/config/init.sh</code>) and start the default server (Rails server for this project).
+
+  Check <code>.docker/start -h</code> for details.
+
+=== Supported Projects
+
+Currently App Server, LAC Server, and LAC Vault are supported. Run <code>.docker/config/key.rb</code> from LAC Server to config api keys for App Server.
+
+See "Dockerizing An Existing App" section for unsupported projects.
 
 == Dockerizing An Existing App
 
@@ -67,21 +79,75 @@ Dinghy::
 
 Docker caches for each line in <code>Dockerfile</code>, and will check modifications of files and use the corresponding cache to skip steps and speed up rebuilding. Therefore, lines that changes more often (such as <code>Gemfile</code>) should be put after lines that changes less often (such as <code>apt-get install build-essential</code>)
 
-In this app two Docker images are built, the minimal one for essential and stable packages, and the other for all packages required. As long as the minimal one is not updated, building the complete one will be much faster than building from scratch. (Though Docker caches, a full <code>bundle install</code> is required to rebuild in case <code>Gemfile</code> changes since it's only one line)
+In the App Server project three Docker images are built, the minimal one for essential and stable packages, another for the mongo server with dump files restored, and the last for development with all required packages installed. As long as the minimal one is not updated, building the complete one will be much faster than building from scratch. (Though Docker caches, a full <code>bundle install</code> is required to rebuild in case <code>Gemfile</code> changes since it's only one line)
 
-The minimal <code>Dockerfile</code> is placed in <code>.docker/images/sample-app</code>.
+The minimal <code>Dockerfile</code> is placed in <code>.docker/images/base</code>:
+
+  # TODO #1
+  # Base our image on an official, minimal image of our preferred Ruby
+  FROM ruby:1.9.3-slim
+
+  # Install essential Linux packages
+  RUN apt-get update -qq && apt-get install -y build-essential
+
+  # Prevent bundler warnings; ensure that the bundler version executed is >= that which created Gemfile.lock
+  RUN gem install bundler
+
+  # TODO #2
+  # Install additional Linux packages
+  RUN apt-get update -qq && apt-get install -y git                                # git
+  RUN apt-get update -qq && apt-get install -y vim                                # vim
+  RUN apt-get update -qq && apt-get install -y libxslt-dev libxml2-dev            # nokogiri, < 1.6.4
+  RUN apt-get update -qq && apt-get install -y mysql-client libmysqlclient-dev    # mysql2
+  RUN apt-get update -qq && apt-get install -y libpq-dev                          # pg
+  RUN apt-get update -qq && apt-get install -y imagemagick                        # mini_magick
+  RUN gem install zeus                                                            # zeus
+
+  # TODO #3
+  # Tweak the system for some particular gem install errors
+  RUN gem update debugger-ruby_core_source
+  RUN gem install debugger -v '1.6.5'
+
+  # TODO #4
+  # Define where our application will live inside the image
+  ENV HOME /root
+  ENV SOURCE_ROOT $HOME/code/appserver
+
+  # Create application home. App server will need the pids dir so just create everything in one shot
+  RUN mkdir -p $SOURCE_ROOT/tmp/pids
+
+  # TODO #5 (Optional)
+  # See https://github.com/nc-lex/sample-rails-docker for the following three sections
+  # Set our working directory to a temporary location for a minimal Rails install
+  RUN mkdir -p /tmp/essentials
+  WORKDIR /tmp/essentials
+
+  # Use the minimal Gemfiles in .docker as Docker cache markers
+  COPY Gemfile* ./
+  COPY vendor/cache vendor/cache
+
+  # Install essential Rails gems
+  RUN bundle install --local --no-cache --no-prune \
+    && rm -rf /tmp/essentials
+  # end OPTIONAL #1
+
+  # Set our working directory to application home
+  WORKDIR $SOURCE_ROOT
+
+  # Start an shell session
+  CMD [ "/bin/bash" ]
 
 The following are parts of the minimal <code>Dockerfile</code> that should be configured, marked as <code>TODO</code>.
 
-1. <code>FROM ruby:2.2-slim</code> defines the base Docker image to be used. Ruby images can be found at https://hub.docker.com/_/ruby
+1. <code>FROM ruby:1.9.3-slim</code> defines the base Docker image to be used. Ruby images can be found at https://hub.docker.com/_/ruby
 
 1. <code>RUN apt-get install -y mysql-client libmysqlclient-dev</code> installs native libraries for <code>mysql2</code> gem. Those RubyGems with native extensions may need this step. Tools for development can also be installed here.
 
 1. Sometimes <code>bundle install</code> may fail before some particular tweaks are made. These tweaks can be placed here.
 
-1. <code>ENV RAILS_ROOT /var/www/sample_app</code> defines where the app will run in the Docker container.
+1. <code>ENV SOURCE_ROOT $HOME/code/appserver</code> defines where the app will run in the Docker container.
 
-1. The essential and stable parts of the gems required by the app can be placed here.
+1. (Optional) The essential and stable parts of the gems required by the app can be placed here.
 
 === Docker Compose
 
@@ -91,45 +157,45 @@ The following are the important labels to be configured in the file.
 
 *links*::
   Allows connecting to another service by its service name, or an alias if specified.
-  
+
 *ports*::
   Expose ports of the container and provide mapping between ports of the Docker Engine (as in <code>dockerhost:*3003*</code>) and ports of the container (as in <code>rails server -p *3000*</code>).
-  
+
   See "Usage" section for more about <code>dockerhost</code>.
-  
+
 *volumes*::
   * If a host path is specified before <code>:</code>, mounts directories of the host system to the container.
-  
+
     See "Volume Mounting" section for issues caused by this feature.
-    
+
   * If a name is specified before <code>:</code>, mounts directories managed by Docker to the container, which also preserves data even if the container is deleted.
-  
+
 The following labels might also be useful.
 
 build::
   Call <code>docker build</code> with the <code>Dockerfile</code> specified to build the image for the service container.
-  
+
 command::
   The command that will be run when the container starts. Overrides <code>COMMAND</code> in <code>Dockerfile</code>.
   Should be placed in brackets to be <code>exec</code>ed and keeps PID = 1.
-  
+
 env_file::
   The list of environment variables to be set. Sensitive strings such as database password can be place here.
 
 image::
   Directly use a Docker base image without a <code>Dockerfile</code> build.
-  
+
 === .docker Folder
 
 <code>.docker</code> folder includes scripts for the container entrypoint, starting containers, starting bash sessions, synchronizing timezone, etc.
 
 The following are files that might need configurations.
 
-* <code>.docker/init.sh</code> will be used to initialize the containers, and <code>.docker/server.sh</code> will be used to start the server.
+* <code>.docker/config/init.sh</code> will be used to initialize the containers, and <code>.docker/config/server.sh</code> will be used to start the server.
 
 * <code>.docker/images/build</code> will be used to build the base images.
 
-* <code>.docker/env/*.env</code> are the environment variable files. See "Usage" section for more about <code>.docker/env/*.env</code>.
+* <code>.docker/env/*.env</code> are the environment variable files.
 
 === Ignore
 
@@ -149,20 +215,20 @@ However, this creates some issues.
 
 1. The extra layer of Docker Machine on OS X slows the mount down. From the container perspective, the host directories referred here are actually Docker Machine folders, which are the host directories shared by Docker Machine through VirtualBox file sharing.
 
-1. The file events will not be passed by VirtualBox, so Linux file event interfaces (such as <code>inotify</code>) will not work. 
+1. The file events will not be passed by VirtualBox, so Linux file event interfaces (such as <code>inotify</code>) will not work.
 
 1. For mounted host directories, permissions on the mounted file system originates from the host file system, and cannot be altered by the container.
 
 * MySQL and PostgreSQL will attempt to take ownership of its data directory. Mounting the data directory to the host (for backing up, etc) will prevent them from doing so and successfully starting up.
-  
+
 * However, their corresponding Docker images define their data directories as volumes managed by Docker, so it's easy to access it from another container. For example, declaring the following lines in <code>docker-compose.yml</code> allows the app container to access the data directory of the database container by the same path (e.g. <code>/var/lib/mysql</code>).
-  
+
     app:
       volumes_from:
         - db
-  
-* Run <code>docker volume inspect <Volume></code> to find the actual volume path. They can be directly accessed in the virtual machine through <code>dinghy ssh</code>. 
-  
+
+* Run <code>docker volume inspect <Volume></code> to find the actual volume path. They can be directly accessed in the virtual machine through <code>dinghy ssh</code>.
+
 ==== Dinghy
 
 http://i.imgur.com/2SXLWxX.png
@@ -181,7 +247,7 @@ Benchmarks are run to evaluate the performance of Docker containers against nati
 
 Setup: Apple OS X 10.11.4, Intel Core 2 Duo 3.06GHz, 16GB DDR3, Mechanical HDD.
 
-=== Appserver Framework Loading
+=== App Server Framework Loading
 
 Command: <code>time echo exit | bundle exec rails console</code>
 
@@ -193,7 +259,7 @@ OS X native::
 Dinghy::
   80.53s
 
-=== Appserver Test Suite
+=== App Server Test Suite
 
 Command: <code>time bundle exec rake spec</code>
 
@@ -205,6 +271,12 @@ OS X native::
 Dinghy::
   44.12min
 
+=== Improvement
+
+Both spring and zeus are included in the containers and should be working. Either of them decreases framework loading time to several seconds.
+
+Note that <code>spring rake</code> and <code>zeus rake</code> loads the development environment regardless of actual command (even including <code>rake spec</code> and <code>rake test:prepare</code>).
+
 == Tips and Troubleshooting
 
 * Any changes to <code>docker-compose.yml</code> may cause Docker Compose to delete and recreate the containers from images. Except for those to the host and named volumes, all changes (such as the newly installed gem libraries and binaries) will be lost. <code>.docker/build</code> (without <code>-b</code>) can be run routinely to rebuild the Docker image to include changes. It can also be used to "clean up" the containers.
@@ -213,12 +285,12 @@ Dinghy::
 
 * The Docker Machine time and the host machine time may get out of sync, causing delays between file changes and Rails server reloading. Use <code>docker-machine ssh default 'sudo ntpclient -s -h pool.ntp.org'</code> (or <code>dinghy ssh 'sudo ntpclient -s -h pool.ntp.org'</code> if using Dinghy) to update the Docker Machine time.
 
-  Timezone can also be different between the host machine and the Docker containers. Using <code>.docker/start</code> or <code>.docker/bash</code> will automatically update the container's timezone with the host machine's.
-  
+  Timezone can also be different between the host machine and the Docker containers. <code>.docker/start</code> and <code>.docker/bash</code> will automatically update the container's timezone with the host machine's.
+
 * Occasionally the shell session behave weirdly. Run <code>stty sane</code> on the OS X host machine may fix the problem.
 
-* The entrypoint script will automatically initialize the Rails database. Deleting <code>tmp/docker/init</code> forces it to initialize again.
+* Run <code>.docker/config/init.sh -f</code> in the container will initialize the database.
 
-* Run <code>.docker/scripts/cleanup.sh</code> will delete any non-running containers, dangling images, and dangling volumes on the entire host machine. Use with caution!
+* Run <code>.docker/scripts/cleanup</code> to delete stopped containers, dangling images, and dangling volumes on the entire host machine. Use with caution!
 
-* Do not set RAILS_ENV or MYSQL_HOST in <code>.docker/.env</code>.
+* Do not set RAILS_ENV or MYSQL_HOST in <code>.docker/*.env</code> for development and test.
