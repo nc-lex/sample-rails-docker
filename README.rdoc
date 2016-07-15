@@ -79,7 +79,7 @@ See "Dockerizing An Existing App" section for unsupported projects.
 
 Docker caches for each line in <code>Dockerfile</code>, and will check modifications of files and use the corresponding cache to skip steps and speed up rebuilding. Therefore, lines that changes more often (such as <code>Gemfile</code>) should be put after lines that changes less often (such as <code>apt-get install build-essential</code>)
 
-In the App Server project three Docker images are built, the minimal one for essential and stable packages, another for the mongo server with dump files restored, and the last for development with all required packages installed. As long as the minimal one is not updated, building the complete one will be much faster than building from scratch. (Though Docker caches, a full <code>bundle install</code> is required to rebuild in case <code>Gemfile</code> changes since it's only one line)
+In the App Server project three Docker images are built, the minimal one for essential and stable packages, another for the mongo server with dump files restored, and the last for development with all required packages installed. As long as the minimal one is not updated, building the complete one will be much faster than building from scratch.
 
 The minimal <code>Dockerfile</code> is placed in <code>.docker/images/base</code>:
 
